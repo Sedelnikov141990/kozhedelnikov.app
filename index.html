@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Kozhedelnikov | Мастерская кожаных изделий</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Подключение Aptabase SDK напрямую как ES-модуль -->
+  <script type="module">
+    import { init, trackEvent } from 'https://esm.sh/@aptabase/web@0.1.1';
+    
+    // Инициализация вашим ключом
+    init('A-US-0220832996', { appVersion: '1.0.0' });
+    
+    // Экспортируем функцию глобально для доступа из всего приложения
+    window.trackAptabaseEvent = trackEvent;
+
+    // Трекинг запуска при старте сессии
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    trackEvent('app_open', {
+      user_id: tgUser ? String(tgUser.id) : 'unknown',
+      username: tgUser && tgUser.username ? tgUser.username : 'anonymous'
+    });
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
@@ -619,7 +638,6 @@
       font-size: 14px;
     }
 
-    /* About Modal & Info Cards */
     .about-card {
       background: var(--bg-color);
       border: 1px solid var(--border-color);
@@ -888,51 +906,19 @@
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 
     // ================= НАСТРОЙКИ =================
-    const APTABASE_APP_KEY = "A-US-0220832996"; 
     const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbw7_bYZwaNw24Vy2vOTiF20VMP3VYc-744kklMwm6uHhhZJ8BoFVOBnXL7ObwhfApqm-g/exec";
     const ENGRAVING_PRICE_RUB = 500;
     // =============================================
 
-    // ================= НАДЕЖНЫЙ ВСТРОЕННЫЙ ТРЕКЕР APTABASE =================
-    let aptabaseSessionId = sessionStorage.getItem('aptabase_session_id');
-    if (!aptabaseSessionId) {
-      aptabaseSessionId = Math.floor(Date.now() / 1000) + '' + Math.floor(Math.random() * 90000000 + 10000000);
-      sessionStorage.setItem('aptabase_session_id', aptabaseSessionId);
-    }
-
-    function trackAnalyticsEvent(eventName, props = {}) {
-      if (!APTABASE_APP_KEY || APTABASE_APP_KEY.startsWith("ВАШ_")) return;
-
-      const host = APTABASE_APP_KEY.includes('-EU-') ? 'https://eu.aptabase.com' : 'https://us.aptabase.com';
-      const url = `${host}/api/v0/event`;
-
-      const payload = {
-        timestamp: new Date().toISOString(),
-        sessionId: aptabaseSessionId,
-        eventName: eventName,
-        systemProps: {
-          locale: navigator.language || 'ru-RU',
-          appVersion: '1.0.0',
-          sdkVersion: 'aptabase-web@custom',
-          osName: tg && tg.platform ? tg.platform : 'web'
-        },
-        props: props
-      };
-
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'App-Key': APTABASE_APP_KEY
-        },
-        credentials: 'omit',
-        body: JSON.stringify(payload)
-      }).then(res => {
-        if (res.ok) console.log(`[Aptabase] Событие отправлено: ${eventName}`);
-        else console.warn(`[Aptabase] Ошибка статуса: ${res.status}`);
-      }).catch(err => {
-        console.warn('[Aptabase] Ошибка сети:', err);
-      });
+    // Безопасный вызов Aptabase через глобальный экспортированный метод
+    function trackAnalyticsEvent(name, props = {}) {
+      if (typeof window.trackAptabaseEvent === 'function') {
+        try {
+          window.trackAptabaseEvent(name, props);
+        } catch (e) {
+          console.warn('Analytics event error:', e);
+        }
+      }
     }
 
     let currentCurrency = 'USD';
@@ -1923,7 +1909,6 @@
       }
     }
 
-    // Привязка слушателей
     document.addEventListener('DOMContentLoaded', async () => {
       if (tg) {
         try {
@@ -1932,7 +1917,7 @@
         } catch (e) {}
       }
 
-      // Отправка входа пользователя в Aptabase
+      // Отправка входа пользователя
       const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
       trackAnalyticsEvent('app_open', {
         user_id: user ? String(user.id) : 'unknown',
@@ -1968,3 +1953,4 @@
   </script>
 </body>
 </html>
+Проверь этот код он рабочий? Работает Aptabase?
