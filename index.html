@@ -3,20 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Kozhedelnikov | Мастерская кожаных изделий</title>
+  <title>Kozhedelnikov | Leather Craft</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <!-- Подключение Aptabase SDK напрямую как ES-модуль -->
   <script type="module">
     import { init, trackEvent } from 'https://esm.sh/@aptabase/web@0.1.1';
     
-    // Инициализация вашим ключом
     init('A-US-0220832996', { appVersion: '1.0.0' });
-    
-    // Экспортируем функцию глобально для доступа из всего приложения
     window.trackAptabaseEvent = trackEvent;
 
-    // Трекинг запуска при старте сессии
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     trackEvent('app_open', {
       user_id: tgUser ? String(tgUser.id) : 'unknown',
@@ -75,7 +71,7 @@
     }
 
     .brand-subtitle {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
       text-align: center;
       text-transform: uppercase;
@@ -83,7 +79,7 @@
       margin-bottom: 12px;
     }
 
-    /* Top Action Bar (Currency + Custom Order + About in one style) */
+    /* Top Action Bar (Lang + Currency + Custom Order + About in one style) */
     .top-action-bar {
       display: flex;
       justify-content: center;
@@ -99,11 +95,11 @@
       display: none;
     }
 
-    .currency-select {
+    .select-pill {
       background: var(--card-bg);
       color: var(--accent-color);
       border: 1px solid var(--border-color);
-      padding: 6px 10px;
+      padding: 6px 8px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 600;
@@ -116,14 +112,14 @@
       background: var(--card-bg);
       color: var(--accent-color);
       border: 1px solid var(--border-color);
-      padding: 6px 12px;
+      padding: 6px 11px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       white-space: nowrap;
       flex-shrink: 0;
       transition: all 0.2s ease;
@@ -687,31 +683,39 @@
 
   <header>
     <div class="brand-title">KOZHEDELNIKOV</div>
-    <div class="brand-subtitle">Leather Craft & Accessories</div>
+    <div class="brand-subtitle" id="t-brand-sub">Leather Craft & Accessories</div>
 
-    <!-- Top Action Bar in Unified Style -->
+    <!-- Top Action Bar (Language + Currency + Custom Order + About) -->
     <div class="top-action-bar">
-      <select class="currency-select" id="currency-select">
+      <!-- Language Selector -->
+      <select class="select-pill" id="language-select">
+        <option value="ru">🇷🇺 RU</option>
+        <option value="en">🇬🇧 EN</option>
+        <option value="pt">🇧🇷 PT</option>
+      </select>
+
+      <!-- Currency Selector -->
+      <select class="select-pill" id="currency-select">
         <option value="USD">$ (USD)</option>
         <option value="RUB">₽ (RUB)</option>
         <option value="BRL">R$ (BRL)</option>
       </select>
 
       <button class="action-btn" id="header-custom-order-btn">
-        <span></span> Эксклюзив
+        <span>✨</span> <span id="t-btn-custom">Эксклюзив</span>
       </button>
 
       <button class="action-btn" id="header-about-btn">
-        <span></span> О нас
+        <span>ℹ️</span> <span id="t-btn-about">О нас</span>
       </button>
     </div>
 
     <div class="categories-wrapper">
-      <button class="category-btn active" data-category="all">Все товары</button>
-      <button class="category-btn" data-category="wallets">Кошельки</button>
-      <button class="category-btn" data-category="bags">Сумки</button>
-      <button class="category-btn" data-category="accessories">Аксессуары</button>
-      <button class="category-btn" data-category="adult">18+</button>
+      <button class="category-btn active" data-category="all" id="t-cat-all">Все товары</button>
+      <button class="category-btn" data-category="wallets" id="t-cat-wallets">Кошельки</button>
+      <button class="category-btn" data-category="bags" id="t-cat-bags">Сумки</button>
+      <button class="category-btn" data-category="accessories" id="t-cat-accessories">Аксессуары</button>
+      <button class="category-btn" data-category="adult" id="t-cat-adult">18+</button>
     </div>
   </header>
 
@@ -722,7 +726,7 @@
   <!-- Floating Cart Bar -->
   <div class="cart-bar" id="cart-bar">
     <div>
-      <span>Корзина</span>
+      <span id="t-cart-label">Корзина</span>
       <span class="cart-count-badge" id="cart-count">0</span>
     </div>
     <div id="cart-total">0 ₽</div>
@@ -732,31 +736,31 @@
   <div class="modal-overlay" id="custom-order-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title">Индивидуальный заказ</div>
+        <div class="modal-title" id="t-custom-modal-title">Индивидуальный заказ</div>
         <button class="close-btn" id="close-custom-order-btn">&times;</button>
       </div>
 
-      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px;">
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px;" id="t-custom-modal-sub">
         Изготовим изделие по вашим размерам, эскизам, референсам или индивидуальным пожеланиям.
       </p>
 
       <div class="form-group">
-        <label class="form-label">Тип изделия / Что хотите заказать:*</label>
+        <label class="form-label" id="t-custom-lbl-item">Тип изделия / Что хотите заказать:*</label>
         <input type="text" class="form-input" id="custom-item-name" placeholder="Например: Портфель для ноутбука 16 дюймов">
       </div>
 
       <div class="form-group">
-        <label class="form-label">Желаемый цвет кожи и нити:</label>
+        <label class="form-label" id="t-custom-lbl-color">Желаемый цвет кожи и нити:</label>
         <input type="text" class="form-input" id="custom-item-color" placeholder="Например: Коньячная кожа, бежевая нить">
       </div>
 
       <div class="form-group">
-        <label class="form-label">Описание, размеры и детали заказа:*</label>
+        <label class="form-label" id="t-custom-lbl-desc">Описание, размеры и детали заказа:*</label>
         <textarea class="form-textarea" id="custom-item-desc" placeholder="Укажите нужные карманы, гравировку инициалов, размеры или ссылку на фото..."></textarea>
       </div>
 
       <div class="form-group">
-        <label class="form-label">Удобный способ связи:</label>
+        <label class="form-label" id="t-custom-lbl-method">Удобный способ связи:</label>
         <select class="form-select" id="custom-contact-type">
           <option value="Telegram">Telegram</option>
           <option value="WhatsApp">WhatsApp</option>
@@ -770,7 +774,7 @@
 
       <div class="consent-group">
         <input type="checkbox" id="custom-consent-check" checked>
-        <label for="custom-consent-check">Я согласен(на) на обработку персональных данных для связи по заказу</label>
+        <label for="custom-consent-check" id="t-custom-lbl-consent">Я согласен(на) на обработку персональных данных для связи по заказу</label>
       </div>
 
       <button class="checkout-btn" id="custom-submit-btn">
@@ -783,36 +787,36 @@
   <div class="modal-overlay" id="about-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title">О мастерской Kozhedelnikov</div>
+        <div class="modal-title" id="t-about-modal-title">О мастерской Kozhedelnikov</div>
         <button class="close-btn" id="close-about-btn">&times;</button>
       </div>
 
       <div class="about-card">
-        <h4>🔨 100% Ручная работа</h4>
-        <p>Каждое изделие кроится, обрабатывается и сшивается вручную классическим седельным швом вощеной нитью. В отличие от машинной строчки, такой шов не распускается со временем.</p>
+        <h4 id="t-about-h1">🔨 100% Ручная работа</h4>
+        <p id="t-about-p1">Каждое изделие кроится, обрабатывается и сшивается вручную классическим седельным швом вощеной нитью. В отличие от машинной строчки, такой шов не распускается со временем.</p>
       </div>
 
       <div class="about-card">
-        <h4>🌿 Премиальная кожа</h4>
-        <p>Мы используем натуральную кожу растительного и комбинированного дубления от именитых фабрик. С годами изделия покрываются благородной патиной и становятся только лучше.</p>
+        <h4 id="t-about-h2">🌿 Премиальная кожа</h4>
+        <p id="t-about-p2">Мы используем натуральную кожу растительного и комбинированного дубления от именитых фабрик. С годами изделия покрываются благородной патиной и становятся только лучше.</p>
       </div>
 
       <div class="about-card">
-        <h4>🛡️ 10 Лет гарантии</h4>
-        <p>Мы полностью уверены в надежности швов и фурнитуры. На все изделия мастерской действует честная гарантия 10 лет.</p>
+        <h4 id="t-about-h3">🛡️ 10 Лет гарантии</h4>
+        <p id="t-about-p3">Мы полностью уверены в надежности швов и фурнитуры. На все изделия мастерской действует честная гарантия 10 лет.</p>
       </div>
 
-      <div style="margin: 18px 0 8px; font-size: 13px; font-weight: 600; color: var(--accent-color);">
+      <div style="margin: 18px 0 8px; font-size: 13px; font-weight: 600; color: var(--accent-color);" id="t-about-contact-head">
         Связаться с мастером напрямую:
       </div>
 
       <a href="https://t.me/kozjedelnikov" target="_blank" class="contact-link">
-        <span>Сообщение в Telegram</span>
+        <span id="t-about-tg-link">Сообщение в Telegram</span>
         <span style="color: var(--accent-color);">@Kozjedelnikov ➔</span>
       </a>
 
       <a href="https://wa.me/79133920629" class="contact-link">
-        <span>Сообщение в WhatsApp</span>
+        <span id="t-about-wa-link">Сообщение в WhatsApp</span>
         <span style="color: var(--accent-color);">+7 (913) 392-06-29 ➔</span>
       </a>
 
@@ -822,7 +826,7 @@
     </div>
   </div>
 
-  <!-- Modal: Product Detailed View with Persistent Floating Close Button -->
+  <!-- Modal: Product Detailed View -->
   <div class="modal-overlay" id="product-detail-modal">
     <button class="floating-close-btn" id="close-product-btn">&times;</button>
 
@@ -841,7 +845,7 @@
 
       <!-- Color Swatches Selector in Modal -->
       <div class="form-group">
-        <label class="form-label">Цвет кожи изделия: <span id="modal-selected-color-name" style="color: var(--accent-color); font-weight: 600;"></span></label>
+        <label class="form-label"><span id="t-modal-color-lbl">Цвет кожи:</span> <span id="modal-selected-color-name" style="color: var(--accent-color); font-weight: 600;"></span></label>
         <div class="modal-swatches" id="modal-swatches-container"></div>
       </div>
 
@@ -853,7 +857,7 @@
       </div>
 
       <div class="form-group" id="item-engraving-group" style="display: none;">
-        <label class="form-label">Текст/инициалы для гравировки:</label>
+        <label class="form-label" id="t-modal-engraving-lbl">Текст/инициалы для гравировки:</label>
         <input type="text" class="form-input" id="item-engraving-text" placeholder="Например: А.С.">
       </div>
 
@@ -867,14 +871,14 @@
   <div class="modal-overlay" id="cart-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title">Ваш заказ</div>
+        <div class="modal-title" id="t-cart-modal-title">Ваш заказ</div>
         <button class="close-btn" id="close-cart-btn">&times;</button>
       </div>
 
       <div id="cart-items-container"></div>
 
       <div class="form-group">
-        <label class="form-label">Способ получения:</label>
+        <label class="form-label" id="t-cart-delivery-lbl">Способ получения:</label>
         <select class="form-select" id="delivery-method">
           <option value="СДЭК (до ПВЗ)">СДЭК (до пункта выдачи)</option>
           <option value="Почта России">Почта России</option>
@@ -884,18 +888,18 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">Номер телефона для связи:*</label>
+        <label class="form-label" id="t-cart-phone-lbl">Номер телефона для связи:*</label>
         <input type="tel" class="form-input" id="customer-phone" placeholder="+7 (999) 000-00-00">
       </div>
 
       <div class="form-group">
-        <label class="form-label">Адрес / Комментарий к заказу:</label>
+        <label class="form-label" id="t-cart-comment-lbl">Адрес / Комментарий к заказу:</label>
         <input type="text" class="form-input" id="customer-comment" placeholder="Город, адрес ПВЗ или пожелания">
       </div>
 
       <div class="consent-group">
         <input type="checkbox" id="cart-consent-check" checked>
-        <label for="cart-consent-check">Я согласен(на) на обработку персональных данных для оформления и доставки заказа</label>
+        <label for="cart-consent-check" id="t-cart-consent-lbl">Я согласен(на) на обработку персональных данных для оформления и доставки заказа</label>
       </div>
 
       <button class="checkout-btn" id="submit-btn">Оформить заказ</button>
@@ -906,11 +910,12 @@
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 
     // ================= НАСТРОЙКИ =================
+    const APTABASE_APP_KEY = "A-US-0220832996"; 
     const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbw7_bYZwaNw24Vy2vOTiF20VMP3VYc-744kklMwm6uHhhZJ8BoFVOBnXL7ObwhfApqm-g/exec";
     const ENGRAVING_PRICE_RUB = 500;
     // =============================================
 
-    // Безопасный вызов Aptabase через глобальный экспортированный метод
+    // Безопасный вызов Aptabase
     function trackAnalyticsEvent(name, props = {}) {
       if (typeof window.trackAptabaseEvent === 'function') {
         try {
@@ -921,6 +926,201 @@
       }
     }
 
+    // ================= СЛОВАРЬ ПЕРЕВОДОВ (I18N) =================
+    const I18N = {
+      ru: {
+        brandSub: 'Leather Craft & Accessories',
+        btnCustom: 'Эксклюзив',
+        btnAbout: 'О нас',
+        catAll: 'Все товары',
+        catWallets: 'Кошельки',
+        catBags: 'Сумки',
+        catAccessories: 'Аксессуары',
+        catAdult: '18+',
+        cartLabel: 'Корзина',
+        chooseBtn: 'Выбрать и заказать',
+        emptyCart: 'Корзина пуста',
+        engravingPlus: 'Персональная гравировка',
+        colorLabel: 'Цвет кожи:',
+        engravingTextLabel: 'Текст/инициалы для гравировки:',
+        engravingPlaceholder: 'Например: А.С.',
+        addToCartBtn: '+ Добавить в корзину',
+        customTitle: 'Индивидуальный заказ',
+        customSub: 'Изготовим изделие по вашим размерам, эскизам, референсам или индивидуальным пожеланиям.',
+        customItemLabel: 'Тип изделия / Что хотите заказать:*',
+        customItemPlaceholder: 'Например: Портфель для ноутбука 16 дюймов',
+        customColorLabel: 'Желаемый цвет кожи и нити:',
+        customColorPlaceholder: 'Например: Коньячная кожа, бежевая нить',
+        customDescLabel: 'Описание, размеры и детали заказа:*',
+        customDescPlaceholder: 'Укажите нужные карманы, гравировку инициалов, размеры или ссылку на фото...',
+        customMethodLabel: 'Удобный способ связи:',
+        customTgNickLabel: 'Ваш ник в Telegram:*',
+        customWaPhoneLabel: 'Номер телефона для WhatsApp:*',
+        customConsent: 'Я согласен(на) на обработку персональных данных для связи по заказу',
+        customSubmit: 'Отправить заявку мастеру',
+        customSending: 'Отправка заявки...',
+        aboutTitle: 'О мастерской Kozhedelnikov',
+        aboutH1: '🔨 100% Ручная работа',
+        aboutP1: 'Каждое изделие кроится, обрабатывается и сшивается вручную классическим седельным швом вощеной нитью. В отличие от машинной строчки, такой шов не распускается со временем.',
+        aboutH2: '🌿 Премиальная кожа',
+        aboutP2: 'Мы используем натуральную кожу растительного и комбинированного дубления от именитых фабрик. С годами изделия покрываются благородной патиной и становятся только лучше.',
+        aboutH3: '🛡️ 10 Лет гарантии',
+        aboutP3: 'Мы полностью уверены в надежности швов и фурнитуры. На все изделия мастерской действует честная гарантия 10 лет.',
+        aboutContactHead: 'Связаться с мастером напрямую:',
+        aboutTgLink: 'Сообщение в Telegram',
+        aboutWaLink: 'Сообщение в WhatsApp',
+        aboutReturn: 'Вернуться к покупкам',
+        cartModalTitle: 'Ваш заказ',
+        deliveryLabel: 'Способ получения:',
+        phoneLabel: 'Номер телефона для связи:*',
+        phonePlaceholder: '+7 (999) 000-00-00',
+        commentLabel: 'Адрес / Комментарий к заказу:',
+        commentPlaceholder: 'Город, адрес ПВЗ или пожелания',
+        cartConsent: 'Я согласен(на) на обработку персональных данных для оформления и доставки заказа',
+        submitOrderBtn: 'Оформить заказ',
+        submittingOrderBtn: 'Отправка...',
+        alertConsent: 'Необходимо согласиться на обработку персональных данных.',
+        alertCustomFields: 'Пожалуйста, заполните название изделия, описание и контакт для связи.',
+        alertPhone: 'Пожалуйста, укажите ваш номер телефона.',
+        alertOrderSuccess: '✅ Заказ успешно оформлен! Мастер свяжется с вами для уточнения деталей.',
+        alertCustomSuccess: '✅ Заявка на индивидуальный заказ отправлена! Мастер свяжется с вами для обсуждения деталей.',
+        alertOrderError: 'Ошибка при отправке заказа.',
+        deliveryOptions: [
+          { val: 'СДЭК (до ПВЗ)', text: 'СДЭК (до пункта выдачи)' },
+          { val: 'Почта России', text: 'Почта России' },
+          { val: 'Курьер', text: 'Курьерская доставка' },
+          { val: 'Самовывоз', text: 'Самовывоз из мастерской' }
+        ]
+      },
+      en: {
+        brandSub: 'Handcrafted Leather Goods',
+        btnCustom: 'Exclusive',
+        btnAbout: 'About Us',
+        catAll: 'All Products',
+        catWallets: 'Wallets',
+        catBags: 'Bags',
+        catAccessories: 'Accessories',
+        catAdult: '18+',
+        cartLabel: 'Cart',
+        chooseBtn: 'Select & Order',
+        emptyCart: 'Cart is empty',
+        engravingPlus: 'Custom Engraving',
+        colorLabel: 'Leather color:',
+        engravingTextLabel: 'Text/initials for engraving:',
+        engravingPlaceholder: 'e.g., J.D.',
+        addToCartBtn: '+ Add to Cart',
+        customTitle: 'Custom Bespoke Order',
+        customSub: 'We will craft an item tailored to your dimensions, sketches, references, or custom ideas.',
+        customItemLabel: 'Item type / What to make:*',
+        customItemPlaceholder: 'e.g., 16-inch Laptop Leather Briefcase',
+        customColorLabel: 'Desired leather & thread color:',
+        customColorPlaceholder: 'e.g., Cognac leather, beige stitching',
+        customDescLabel: 'Description, dimensions & order details:*',
+        customDescPlaceholder: 'Specify required pockets, initials, measurements, or photo link...',
+        customMethodLabel: 'Preferred contact method:',
+        customTgNickLabel: 'Your Telegram username:*',
+        customWaPhoneLabel: 'WhatsApp phone number:*',
+        customConsent: 'I consent to the processing of personal data for order communication',
+        customSubmit: 'Send Request to Artisan',
+        customSending: 'Sending request...',
+        aboutTitle: 'About Kozhedelnikov Workshop',
+        aboutH1: '🔨 100% Handcrafted',
+        aboutP1: 'Each piece is hand-cut, burnished, and sewn with classic saddle stitch using waxed thread. Unlike machine stitching, saddle stitch never unravels over time.',
+        aboutH2: '🌿 Premium Leather',
+        aboutP2: 'We use full-grain vegetable and combination tanned leather from renowned tanneries. Over the years, it develops a rich patina and looks even better.',
+        aboutH3: '🛡️ 10-Year Warranty',
+        aboutP3: 'We are completely confident in the durability of our stitches and solid brass hardware. We provide a solid 10-year warranty.',
+        aboutContactHead: 'Contact the artisan directly:',
+        aboutTgLink: 'Message on Telegram',
+        aboutWaLink: 'Message on WhatsApp',
+        aboutReturn: 'Back to shop',
+        cartModalTitle: 'Your Order',
+        deliveryLabel: 'Delivery method:',
+        phoneLabel: 'Contact phone number:*',
+        phonePlaceholder: '+1 (555) 000-0000',
+        commentLabel: 'Delivery address / Order notes:',
+        commentPlaceholder: 'City, shipping address or special requests',
+        cartConsent: 'I consent to the processing of personal data for order fulfillment',
+        submitOrderBtn: 'Place Order',
+        submittingOrderBtn: 'Processing...',
+        alertConsent: 'Consent to personal data processing is required.',
+        alertCustomFields: 'Please fill in the item name, description, and your contact.',
+        alertPhone: 'Please provide your contact phone number.',
+        alertOrderSuccess: '✅ Order placed successfully! We will contact you shortly to confirm details.',
+        alertCustomSuccess: '✅ Bespoke request sent! The artisan will contact you to discuss details.',
+        alertOrderError: 'Error sending order. Please try again.',
+        deliveryOptions: [
+          { val: 'International Postal Service', text: 'International Postal Delivery' },
+          { val: 'Express Courier (DHL/FedEx)', text: 'Express Courier' },
+          { val: 'Workshop Pickup', text: 'Workshop Pickup' }
+        ]
+      },
+      pt: {
+        brandSub: 'Artigos em Couro Legítimo Feitos à Mão',
+        btnCustom: 'Exclusivo',
+        btnAbout: 'Sobre Nós',
+        catAll: 'Todos',
+        catWallets: 'Carteiras',
+        catBags: 'Bolsas',
+        catAccessories: 'Acessórios',
+        catAdult: '18+',
+        cartLabel: 'Carrinho',
+        chooseBtn: 'Escolher e Pedir',
+        emptyCart: 'O carrinho está vazio',
+        engravingPlus: 'Gravação Personalizada',
+        colorLabel: 'Cor do couro:',
+        engravingTextLabel: 'Texto/iniciais para gravação:',
+        engravingPlaceholder: 'Ex: A.S.',
+        addToCartBtn: '+ Adicionar ao Carrinho',
+        customTitle: 'Encomenda Personalizada',
+        customSub: 'Fabricamos peças sob medida de acordo com suas referências, desenhos ou preferências.',
+        customItemLabel: 'Tipo de peça / O que deseja encomendar:*',
+        customItemPlaceholder: 'Ex: Pasta de couro para notebook 16"',
+        customColorLabel: 'Cor desejada do couro e costura:',
+        customColorPlaceholder: 'Ex: Couro conhaque, costura bege',
+        customDescLabel: 'Descrição, medidas e detalhes do pedido:*',
+        customDescPlaceholder: 'Informe bolsos necessários, iniciais, medidas ou link com fotos...',
+        customMethodLabel: 'Forma de contato preferida:',
+        customTgNickLabel: 'Seu usuário do Telegram:*',
+        customWaPhoneLabel: 'Número do WhatsApp:*',
+        customConsent: 'Concordo com o processamento de dados para contato sobre o pedido',
+        customSubmit: 'Enviar Pedido ao Artesão',
+        customSending: 'Enviando...',
+        aboutTitle: 'Sobre o Ateliê Kozhedelnikov',
+        aboutH1: '🔨 100% Feito à Mão',
+        aboutP1: 'Cada peça é cortada, polida e costurada à mão com o clássico ponto celeiro e linha encerada. Diferente da costura mecânica, não descostura com o tempo.',
+        aboutH2: '🌿 Couro Bovino Premium',
+        aboutP2: 'Utilizamos couro legítimo curtido ao vegetal de curtumes selecionados. Com o passar dos anos, ganha uma pátina nobre e fica ainda mais bonito.',
+        aboutH3: '🛡️ 10 Anos de Garantia',
+        aboutP3: 'Temos total confiança na durabilidade da nossa costura manual e ferragens em latão maciço. Oferecemos 10 anos de garantia.',
+        aboutContactHead: 'Falar diretamente com o artesão:',
+        aboutTgLink: 'Mensagem no Telegram',
+        aboutWaLink: 'Mensagem no WhatsApp',
+        aboutReturn: 'Voltar à loja',
+        cartModalTitle: 'Seu Pedido',
+        deliveryLabel: 'Forma de envio:',
+        phoneLabel: 'Telefone para contato:*',
+        phonePlaceholder: '+55 (48) 90000-0000',
+        commentLabel: 'Endereço / Observações do pedido:',
+        commentPlaceholder: 'Cidade, CEP, endereço ou preferências',
+        cartConsent: 'Concordo com o processamento de dados para entrega do pedido',
+        submitOrderBtn: 'Finalizar Pedido',
+        submittingOrderBtn: 'Enviando...',
+        alertConsent: 'É necessário concordar com o processamento de dados.',
+        alertCustomFields: 'Por favor, preencha o nome da peça, descrição e contato.',
+        alertPhone: 'Por favor, informe seu número de telefone.',
+        alertOrderSuccess: '✅ Pedido realizado com sucesso! O artesão entrará em contato para confirmar os detalhes.',
+        alertCustomSuccess: '✅ Solicitação enviada! Entraremos em contato em breve para alinhar os detalhes.',
+        alertOrderError: 'Erro ao enviar pedido. Tente novamente.',
+        deliveryOptions: [
+          { val: 'Correios (SEDEX / PAC)', text: 'Correios (SEDEX / PAC)' },
+          { val: 'Entrega por Motoboy / Transportadora', text: 'Transportadora / Motoboy' },
+          { val: 'Retirada no Ateliê', text: 'Retirada no Ateliê' }
+        ]
+      }
+    };
+
+    let currentLang = 'ru';
     let currentCurrency = 'USD';
     let exchangeRates = {
       RUB: 1,
@@ -931,15 +1131,18 @@
     function getColorHex(colorName) {
       const lower = colorName.toLowerCase();
       if (lower.includes('черн') && lower.includes('красн')) return 'linear-gradient(135deg, #1a1a1a 50%, #8b0000 50%)';
-      if (lower.includes('черн') || lower.includes('чёрн')) return '#1a1a1a';
-      if (lower.includes('шоколад') || lower.includes('темно') || lower.includes('коричн')) return '#3d2314';
-      if (lower.includes('рыж') || lower.includes('коньяк')) return '#a65b24';
-      if (lower.includes('бордо') || lower.includes('вишн')) return '#58111a';
-      if (lower.includes('красн')) return '#8b0000';
-      if (lower.includes('зелен') || lower.includes('изумруд')) return '#1b382b';
-      if (lower.includes('син') || lower.includes('navy')) return '#1a2b4c';
-      if (lower.includes('желт') || lower.includes('жёлт') || lower.includes('горчиц')) return '#c28b1e';
-      if (lower.includes('оливк')) return '#556b2f';
+      if (lower.includes('black') && lower.includes('red')) return 'linear-gradient(135deg, #1a1a1a 50%, #8b0000 50%)';
+      if (lower.includes('preto') && lower.includes('vermelho')) return 'linear-gradient(135deg, #1a1a1a 50%, #8b0000 50%)';
+      
+      if (lower.includes('черн') || lower.includes('чёрн') || lower.includes('black') || lower.includes('preto')) return '#1a1a1a';
+      if (lower.includes('шоколад') || lower.includes('темно') || lower.includes('коричн') || lower.includes('brown') || lower.includes('marrom')) return '#3d2314';
+      if (lower.includes('рыж') || lower.includes('коньяк') || lower.includes('cognac') || lower.includes('conhaque')) return '#a65b24';
+      if (lower.includes('бордо') || lower.includes('вишн') || lower.includes('burgundy') || lower.includes('vinho')) return '#58111a';
+      if (lower.includes('красн') || lower.includes('red') || lower.includes('vermelho')) return '#8b0000';
+      if (lower.includes('зелен') || lower.includes('изумруд') || lower.includes('green') || lower.includes('verde')) return '#1b382b';
+      if (lower.includes('син') || lower.includes('navy') || lower.includes('blue') || lower.includes('azul')) return '#1a2b4c';
+      if (lower.includes('желт') || lower.includes('жёлт') || lower.includes('горчиц') || lower.includes('yellow') || lower.includes('amarelo')) return '#c28b1e';
+      if (lower.includes('оливк') || lower.includes('olive') || lower.includes('oliva')) return '#556b2f';
       return '#8b5a2b';
     }
 
@@ -981,21 +1184,30 @@
       currentCurrency = currency;
       renderProducts();
       updateCartUI();
+      const t = I18N[currentLang];
       document.getElementById('item-engraving-label').textContent = 
-        `Персональная гравировка (+${formatPrice(ENGRAVING_PRICE_RUB)})`;
+        `${t.engravingPlus} (+${formatPrice(ENGRAVING_PRICE_RUB)})`;
     }
 
-    // Каталог товаров
+    // ================= КАТАЛОГ С МУЛЬТИЯЗЫЧНЫМИ ДАННЫМИ =================
     const products = [
       { 
         id: 101, 
         category: 'accessories', 
-        name: 'Обложка Driver', 
+        name: {
+          ru: 'Обложка Driver',
+          en: 'Driver Document Wallet',
+          pt: 'Carteira para Documentos Driver'
+        },
         price: 9000, 
-        desc: 'Обложка для документов. 3 отдела для паспорта и ПТС. 3 отдела под карты и водительское удостоверение. Удобная кнопка, чтобы не потерять важное. Ручной шов.',
+        desc: {
+          ru: 'Обложка для документов. 3 отдела для паспорта и ПТС. 3 отдела под карты и водительское удостоверение. Удобная кнопка, чтобы не потерять важное. Ручной шов.',
+          en: 'Handcrafted document holder. 3 compartments for passport & vehicle papers, 3 card/driver license slots. Solid brass snap button. Saddle stitched.',
+          pt: 'Porta-documentos em couro artesanal. 3 divisórias para passaporte e CRLV, 3 espaços para cartões e CNH. Fecho com botão de pressão confiável. Costura manual.'
+        },
         colorVariants: [
           {
-            color: "Темно-коричневый",
+            color: { ru: 'Темно-коричневый', en: 'Dark Brown', pt: 'Marrom Escuro' },
             images: [
               './images/oblozhkaV1/img1.webp',
               './images/oblozhkaV1/img2.webp',
@@ -1005,7 +1217,7 @@
             ]
           },
           {
-            color: "Черный матовый",
+            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
             images: [
               './images/oblozhkaV1/black3.webp',
               './images/oblozhkaV1/black1.webp',
@@ -1019,12 +1231,20 @@
       { 
         id: 102, 
         category: 'wallets', 
-        name: 'Картхолдер Сompact', 
+        name: {
+          ru: 'Картхолдер Сompact',
+          en: 'Compact Cardholder',
+          pt: 'Porta-Cartões Compact'
+        },
         price: 5690, 
-        desc: 'Компактный картхолдер для 4-6 карт и наличных. Ручной шов.', 
+        desc: {
+          ru: 'Компактный картхолдер для 4-6 карт и наличных. Ручной шов.',
+          en: 'Minimalist leather cardholder for 4-6 cards and cash. Saddle stitch.',
+          pt: 'Porta-cartões minimalista para 4 a 6 cartões e cédulas dobradas. Costura manual.'
+        },
         colorVariants: [
           {
-            color: "Черный матовый",
+            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
             images: [
               './images/Wallet/Cartholder/Black/cartholderM2.webp',
               './images/Wallet/Cartholder/Black/cartholderM1.webp',
@@ -1038,12 +1258,20 @@
       { 
         id: 1022, 
         category: 'wallets', 
-        name: 'Картхолдер Trevel', 
+        name: {
+          ru: 'Картхолдер Travel',
+          en: 'Travel Cardholder',
+          pt: 'Porta-Cartões Travel'
+        },
         price: 7900, 
-        desc: 'Компактный картхолдер для 6-7 карт и наличных. Ручной шов.', 
+        desc: {
+          ru: 'Компактный картхолдер для 6-7 карт и наличных. Ручной шов.',
+          en: 'Compact travel wallet for 6-7 cards and banknotes. Saddle stitched.',
+          pt: 'Carteira compacta para 6 a 7 cartões e cédulas. Ponto celeiro feito à mão.'
+        },
         colorVariants: [
           {
-            color: "Коричневый",
+            color: { ru: 'Коричневый', en: 'Brown', pt: 'Marrom' },
             images: [
               './images/Wallet/Cartholder/Brown/cartholderB1.webp',
               './images/Wallet/Cartholder/Brown/cartholderB2.webp',
@@ -1057,12 +1285,20 @@
       { 
         id: 1023, 
         category: 'wallets', 
-        name: 'Бифолд Classic', 
+        name: {
+          ru: 'Бифолд Classic',
+          en: 'Classic Bifold',
+          pt: 'Carteira Bifold Classic'
+        },
         price: 10690, 
-        desc: 'Компактный кошелек вмещается 6-8 карт и купюры. Ручной шов.', 
+        desc: {
+          ru: 'Компактный кошелек вмещает 6-8 карт и купюры. Ручной шов.',
+          en: 'Slim bifold wallet holding 6-8 cards and full-size bills. Hand-sewn.',
+          pt: 'Carteira bifold clássica que comporta 6 a 8 cartões e notas abertas. Costura manual.'
+        },
         colorVariants: [
           {
-            color: "Коричневый, Черный",
+            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
             images: [
               './images/Wallet/Bifold2/Bifold2A5.webp',
               './images/Wallet/Bifold2/Bifold2A2.webp',
@@ -1075,12 +1311,20 @@
       { 
         id: 1024, 
         category: 'wallets', 
-        name: 'Кошелёк Classic', 
+        name: {
+          ru: 'Кошелёк Classic',
+          en: 'Classic Wallet',
+          pt: 'Carteira Masculina Classic'
+        },
         price: 12550, 
-        desc: 'Классический кошелек вмещается 7-10 карт и купюры. Ручной шов.', 
+        desc: {
+          ru: 'Классический кошелек вмещает 7-10 карт и купюры. Ручной шов.',
+          en: 'Full-size classic wallet for 7-10 cards and bills. Durable saddle stitch.',
+          pt: 'Carteira tradicional espaçosa para 7 a 10 cartões e dinheiro. Couro premium.'
+        },
         colorVariants: [
           {
-            color: "Коричневый, Черный",
+            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
             images: [
               './images/Wallet/Bifold/BifoldA2.webp',
               './images/Wallet/Bifold/BifoldA1.webp',
@@ -1094,12 +1338,20 @@
       { 
         id: 1025, 
         category: 'wallets', 
-        name: 'Картхолдер Nwe', 
+        name: {
+          ru: 'Картхолдер New',
+          en: 'New Pocket Cardholder',
+          pt: 'Porta-Cartões New'
+        },
         price: 4000, 
-        desc: 'Компактный картхолдер вмещается 3-4 карты и купюры. Ручной шов.', 
+        desc: {
+          ru: 'Компактный картхолдер вмещает 3-4 карты и купюры. Ручной шов.',
+          en: 'Ultra-slim pocket sleeve for 3-4 cards and folded cash. Hand-stitched.',
+          pt: 'Porta-cartões extra fino para 3 a 4 cartões e notas dobradas. Costurado à mão.'
+        },
         colorVariants: [
           {
-            color: "Коричневый, Черный",
+            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
             images: [
               './images/Wallet/Cartholder2/Cartholder2A1.webp',
               './images/Wallet/Cartholder2/Cartholder2A2.webp',
@@ -1112,12 +1364,20 @@
       { 
         id: 1026, 
         category: 'wallets', 
-        name: 'Кошелёк Mini', 
+        name: {
+          ru: 'Кошелёк Mini',
+          en: 'Mini Pocket Wallet',
+          pt: 'Mini Carteira Pocket'
+        },
         price: 10450, 
-        desc: 'Компактный кошелёк вмещается 5-6 карт и купюры. Ручной шов.', 
+        desc: {
+          ru: 'Компактный кошелёк вмещает 5-6 карт и купюры. Ручной шов.',
+          en: 'Compact daily wallet for 5-6 cards and cash. Premium leather.',
+          pt: 'Carteira de bolso prática para 5 a 6 cartões e cédulas. Couro nobre.'
+        },
         colorVariants: [
           {
-            color: "Коричневый, Черный",
+            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
             images: [
               './images/Wallet/WalletM/WalletM1.webp',
               './images/Wallet/WalletM/WalletM2.webp',
@@ -1132,12 +1392,20 @@
       { 
         id: 1027, 
         category: 'wallets', 
-        name: 'Клатч Zipper', 
+        name: {
+          ru: 'Клатч Zipper',
+          en: 'Zipper Leather Clutch',
+          pt: 'Clutch com Zíper'
+        },
         price: 17660, 
-        desc: 'Вместительный клатч на замке. Ручной шов.', 
+        desc: {
+          ru: 'Вместительный клатч на замке. Ручной шов.',
+          en: 'Spacious zippered leather organizer for smartphone, cards, and passports.',
+          pt: 'Bolsa de mão/clutch com zíper resistente para smartphone, passaportes e cartões.'
+        },
         colorVariants: [
           {
-            color: "Коричневый, Черный",
+            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
             images: [
               './images/Wallet/KlatchA/KlatchA1.webp',
               './images/Wallet/KlatchA/KlatchA2.webp',
@@ -1152,12 +1420,20 @@
       { 
         id: 103, 
         category: 'wallets', 
-        name: 'Лонгер Moscow', 
+        name: {
+          ru: 'Лонгер Moscow',
+          en: 'Moscow Long Wallet',
+          pt: 'Carteira Longa Moscow'
+        },
         price: 15000, 
-        desc: 'Вместительный лонгер для купюр, карт и авиабилетов. Карман на молнии, 6 отделения для карточек, два отделения под купюры.', 
+        desc: {
+          ru: 'Вместительный лонгер для купюр, карт и авиабилетов. Карман на молнии, 6 отделений для карточек, два отделения под купюры.',
+          en: 'Spacious travel long wallet for boarding passes, cash, and smartphone. Zipper pocket, 6 card slots.',
+          pt: 'Carteira longa de viagem para passaporte, passagens aéreas e celular. Bolso com zíper e 6 slots para cartões.'
+        },
         colorVariants: [
           {
-            color: "Коричневый, зеленый",
+            color: { ru: 'Коричневый, зеленый', en: 'Brown & Green', pt: 'Marrom e Verde' },
             images: [
               './images/Wallet/longer/Brown/longerB1.webp',
               './images/Wallet/longer/Brown/longerB2.webp',
@@ -1167,7 +1443,7 @@
             ]
           },
           {
-            color: "Черный матовый",
+            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
             images: [
               './images/Wallet/longer/Black/longerA1.webp',
               './images/Wallet/longer/Black/longerA2.webp',
@@ -1181,12 +1457,20 @@
       { 
         id: 201, 
         category: 'bags', 
-        name: 'Деловая сумка «Kos»', 
+        name: {
+          ru: 'Деловая сумка «Kos»',
+          en: 'Kos Business Messenger Bag',
+          pt: 'Bolsa Carteiro Kos'
+        },
         price: 36000, 
-        desc: 'Кожаная сумка под формат А5. Два основных отделения, карманы для печати, лупы, мелочей и задний отсек на молнии для телефона. Удобно и функционально.', 
+        desc: {
+          ru: 'Кожаная сумка под формат А5. Два основных отделения, карманы для печати, лупы, мелочей и задний отсек на молнии для телефона. Удобно и функционально.',
+          en: 'Premium A5 shoulder bag with two compartments, quick-access pockets, and rear zippered phone pocket.',
+          pt: 'Bolsa transversal formato A5 em couro encorpado com divisórias organizadoras e bolso traseiro com zíper.'
+        },
         colorVariants: [
           {
-            color: "Коричневый",
+            color: { ru: 'Коричневый', en: 'Brown', pt: 'Marrom' },
             images: [
               './images/bagmen/bodykos/kos1.webp',
               './images/bagmen/bodykos/kos2.webp',
@@ -1196,7 +1480,7 @@
             ]
           },
           {
-            color: "Черный матовый",
+            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
             images: ['./images/bagmen/bodykos/kos1.webp']
           }
         ]
@@ -1204,12 +1488,20 @@
       { 
         id: 202, 
         category: 'bags', 
-        name: 'Рюкзак «Travel»', 
+        name: {
+          ru: 'Рюкзак «Travel»',
+          en: 'Travel Convertible Backpack',
+          pt: 'Mochila Conversível Travel'
+        },
         price: 38500, 
-        desc: 'Премиальный кожаный рюкзак-трансформер: легко превращается в элегантную сумку. Вместительное основное отделение, карман на молнии и безупречный стиль для любых сценариев вашего дня.', 
+        desc: {
+          ru: 'Премиальный кожаный рюкзак-трансформер: легко превращается в элегантную сумку. Вместительное основное отделение, карман на молнии и безупречный стиль.',
+          en: 'Transformer leather backpack that easily converts into an elegant shoulder bag. Roomy main compartment.',
+          pt: 'Mochila conversível que se transforma facilmente em bolsa de ombro sofisticada. Espaço amplo e forro premium.'
+        },
         colorVariants: [
           {
-            color: "Жёлтый",
+            color: { ru: 'Жёлтый', en: 'Mustard Yellow', pt: 'Amarelo Mostarda' },
             images: [
               './images/baggirl/BackpackA/BackpackA1.webp',
               './images/baggirl/BackpackA/BackpackA2.webp',
@@ -1223,12 +1515,20 @@
       { 
         id: 203, 
         category: 'bags', 
-        name: 'Деловая сумка «Ocean»', 
+        name: {
+          ru: 'Деловая сумка «Ocean»',
+          en: 'Ocean Crossbody Bag',
+          pt: 'Bolsa Crossbody Ocean'
+        },
         price: 36500, 
-        desc: 'Премиальная кожаная кросс-боди формата А5 для бизнеса и путешествий. Восемь продуманных карманов, регулируемый ремень и безупречный стиль для тех, кто ценит статус.', 
+        desc: {
+          ru: 'Премиальная кожаная кросс-боди формата А5 для бизнеса и путешествий. Восемь продуманных карманов, регулируемый ремень и безупречный стиль.',
+          en: 'Signature A5 crossbody bag for business and travel. 8 smart pockets and adjustable leather strap.',
+          pt: 'Bolsa transversal formato A5 com 8 compartimentos planejados e alça ajustável em couro legítimo.'
+        },
         colorVariants: [
           {
-            color: "Синий",
+            color: { ru: 'Синий', en: 'Deep Blue', pt: 'Azul Petróleo' },
             images: [
               './images/baggirl/bodyA/bodyA1.webp',
               './images/baggirl/bodyA/bodyA2.webp',
@@ -1242,12 +1542,20 @@
       { 
         id: 204, 
         category: 'bags', 
-        name: 'Сумка для вина «Wine»', 
+        name: {
+          ru: 'Сумка для вина «Wine»',
+          en: 'Wine Leather Carrier',
+          pt: 'Porta-Vinhos em Couro Wine'
+        },
         price: 29950, 
-        desc: 'Премиальная кожаная сумка для двух бутылок вина. Надежная застежка-кнопка, удобный плечевой ремень и красивая эстетика — идеальный подарок и стильный спутник для особых вечеров.', 
+        desc: {
+          ru: 'Премиальная кожаная сумка для двух бутылок вина. Надежная застежка-кнопка, удобный плечевой ремень и красивая эстетика.',
+          en: 'Luxury dual-bottle wine tote with padded separator, secure button strap, and shoulder carrier.',
+          pt: 'Porta-vinhos luxuoso em couro para 2 garrafas com alça de ombro confortável e fecho resistente.'
+        },
         colorVariants: [
           {
-            color: "Красный",
+            color: { ru: 'Красный', en: 'Crimson Red', pt: 'Vermelho Carmim' },
             images: [
               './images/baggirl/wine/wine1.webp',
               './images/baggirl/wine/wine2.webp',
@@ -1261,12 +1569,20 @@
       { 
         id: 301, 
         category: 'accessories', 
-        name: 'Ремень и Брелок', 
+        name: {
+          ru: 'Ремень и Брелок',
+          en: 'Belt & Keychain Set',
+          pt: 'Kit Cinto e Chaveiro'
+        },
         price: 12950, 
-        desc: 'Ручная работа из премиальной кожи с пряжкой из латуни: плавная регулировка, надёжная посадка, ширина 38мм — лаконичная элегантность и безупречное качество на каждый день.', 
+        desc: {
+          ru: 'Ручная работа из премиальной кожи с пряжкой из латуни: плавная регулировка, надёжная посадка, ширина 38мм — лаконичная элегантность.',
+          en: 'Full-grain 38mm leather belt with solid cast brass buckle paired with a matching brass keychain.',
+          pt: 'Cinto de couro espesso 38mm com fivela de latão maciço e chaveiro artesanal combinando.'
+        },
         colorVariants: [
           {
-            color: "Темно-коричневый",
+            color: { ru: 'Темно-коричневый', en: 'Dark Brown', pt: 'Marrom Escuro' },
             images: [
               './images/Belt/beltA/beltA1.webp',
               './images/Belt/beltA/beltA2.webp',
@@ -1276,73 +1592,82 @@
             ]
           },
           {
-            color: "Черный",
-            images: [
-              './images/Belt/beltA/beltA1.webp'
-            ]
+            color: { ru: 'Черный', en: 'Black', pt: 'Preto' },
+            images: ['./images/Belt/beltA/beltA1.webp']
           }
         ]
       },
       { 
         id: 302, 
         category: 'accessories', 
-        name: 'Обложка и картхолдер', 
+        name: {
+          ru: 'Обложка и картхолдер',
+          en: 'Passport Cover & Cardholder Set',
+          pt: 'Kit Porta-Passaporte e Cartões'
+        },
         price: 7950, 
-        desc: 'Кожаный комплект: обложка для документов с тиснением и компактный кардхолдер для карт и купюр. Стильный, практичный дуэт на каждый день.', 
+        desc: {
+          ru: 'Кожаный комплект: обложка для документов с тиснением и компактный кардхолдер для карт и купюр.',
+          en: 'Matching daily set: embossed leather passport protector plus a slim credit cardholder.',
+          pt: 'Conjunto requintado: capa para passaporte em couro e porta-cartões compacto combinando.'
+        },
         colorVariants: [
           {
-            color: "Чёрный",
-            images: [
-              './images/oblizhkaPC/oblozhkaA/oblozhkaA2.webp'
-            ]
+            color: { ru: 'Чёрный', en: 'Black', pt: 'Preto' },
+            images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA2.webp']
           },
           {
-            color: "Коричневый",
-            images: [
-              './images/oblizhkaPC/oblozhkaA/oblozhkaA1.webp'
-            ]
+            color: { ru: 'Коричневый', en: 'Brown', pt: 'Marrom' },
+            images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA1.webp']
           },
           {
-            color: "Жёлтый (Горчица)",
-            images: [
-              './images/oblizhkaPC/oblozhkaA/oblozhkaA4.webp'
-            ]
+            color: { ru: 'Жёлтый (Горчица)', en: 'Mustard Yellow', pt: 'Amarelo Mostarda' },
+            images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA4.webp']
           },
           {
-            color: "Синий",
-            images: [
-              './images/oblizhkaPC/oblozhkaA/oblozhkaA5.webp'
-            ]
+            color: { ru: 'Синий', en: 'Blue', pt: 'Azul' },
+            images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA5.webp']
           }
         ]
       },
       { 
         id: 303, 
         category: 'accessories', 
-        name: 'Обложка для паспорта»', 
+        name: {
+          ru: 'Обложка для паспорта',
+          en: 'Passport Cover Sleeve',
+          pt: 'Capa Protetora para Passaporte'
+        },
         price: 6850, 
-        desc: 'Компактный футляр для ключей. Надежно защитит экран телефона и ткань карманов от царапин.', 
+        desc: {
+          ru: 'Удобная обложка для паспорта и посадочного талона из натуральной кожи растительного дубления.',
+          en: 'Durable full-grain leather passport case. Protects your most important document in style.',
+          pt: 'Capa durável para passaporte em couro vegetal genuíno. Proteção com estilo e acabamento refinado.'
+        },
         colorVariants: [
           {
-            color: "Чёрный",
-            images: [
-              './images/oblizhkaPC/oblozhkaB/oblozhkaB1.webp'
-            ]
+            color: { ru: 'Чёрный', en: 'Black', pt: 'Preto' },
+            images: ['./images/oblizhkaPC/oblozhkaB/oblozhkaB1.webp']
           }
         ]
       },
       { 
         id: 401, 
         category: 'adult', 
-        name: 'Портупея Elegance', 
+        name: {
+          ru: 'Портупея Elegance',
+          en: 'Elegance Leather Harness',
+          pt: 'Harness Elegance em Couro'
+        },
         price: 9850, 
-        desc: `Портупея создана для того, чтобы подчеркнуть уверенность, элегантность и смелое самовыражение. Регулируемые ремни и усиленная металлическая фурнитура создают модульную конструкцию, подчёркивающую силуэт, идеальную посадку, смелую элегантность и полную свободу движений.
-3 ремешка — 29 × 1,5 см
-10 ремешков — 27 × 1,5 см
-3 ремешка — 15 × 1,5 см`, 
+        desc: {
+          ru: `Портупея создана для того, чтобы подчеркнуть уверенность, элегантность и смелое самовыражение. Регулируемые ремни и усиленная металлическая фурнитура.\n3 ремешка — 29 × 1,5 см\n10 ремешков — 27 × 1,5 см\n3 ремешка — 15 × 1,5 см`,
+          en: `Designed to emphasize confidence and elegance. Fully adjustable straps with heavy-duty metal hardware.\n3 straps — 29 × 1.5 cm\n10 straps — 27 × 1.5 cm\n3 straps — 15 × 1.5 cm`,
+          pt: `Harness artesanal em tiras de couro macio e fivelas reguláveis em metal resistente.\n3 tiras — 29 × 1,5 cm\n10 tiras — 27 × 1,5 cm\n3 tiras — 15 × 1,5 cm`
+        },
         colorVariants: [
           {
-            color: "Черный",
+            color: { ru: 'Черный', en: 'Black', pt: 'Preto' },
             images: [
               './images/18+/portuA/portuAblack1.webp',
               './images/18+/portuA/portuAblack2.webp',
@@ -1351,7 +1676,7 @@
             ]
           },
           {
-            color: "Красный глубокий",
+            color: { ru: 'Красный глубокий', en: 'Deep Red', pt: 'Vermelho Intenso' },
             images: [
               './images/18+/portuA/portuAred1.webp',
               './images/18+/portuA/portuAred2.webp',
@@ -1364,12 +1689,20 @@
       { 
         id: 402, 
         category: 'adult', 
-        name: 'Набор из браслетов и манжет на лодыжку', 
+        name: {
+          ru: 'Набор из браслетов и манжет на лодыжку',
+          en: 'Wrist & Ankle Leather Cuffs Set',
+          pt: 'Conjunto de Algemas e Tornozeleiras'
+        },
         price: 9550, 
-        desc: 'Премиальный комплект кожаных наручников для ценителей эстетики контроля и власти. Надежная фурнитура, безупречное качество и 10 лет гарантии.', 
+        desc: {
+          ru: 'Премиальный комплект кожаных наручников для ценителей эстетики контроля и власти. Надежная фурнитура, безупречное качество и 10 лет гарантии.',
+          en: 'Premium leather restraints set with soft suede lining and solid nickel-free buckles. Built to last.',
+          pt: 'Kit sofisticado de punhos e tornozeleiras em couro legítimo forrado, com ferragens de alta resistência.'
+        },
         colorVariants: [
           {
-            color: "Черный, красный",
+            color: { ru: 'Черный, красный', en: 'Black & Red', pt: 'Preto e Vermelho' },
             images: [
               './images/18+/18A1.webp',
               './images/18+/18A2.webp',
@@ -1383,12 +1716,20 @@
       { 
         id: 403, 
         category: 'adult', 
-        name: 'Флоггер Craft', 
+        name: {
+          ru: 'Флоггер Craft',
+          en: 'Craft Leather Flogger',
+          pt: 'Flogger em Couro Craft'
+        },
         price: 8550, 
-        desc: 'Искушающая кожаная плетка ручной работы — баланс нежности и абсолютной власти. Премиальный черный глянец, шелковистые хвосты и чистая страсть в каждом взмахе.', 
+        desc: {
+          ru: 'Искушающая кожаная плетка ручной работы — баланс нежности и абсолютной власти. Премиальный черный глянец, шелковистые хвосты и чистая страсть.',
+          en: 'Balanced handcrafted leather flogger. Supple leather falls, wrapped grip, and luxurious tactile feedback.',
+          pt: 'Chicote flogger artesanal em tiras de couro macio e empunhadura firme revestida à mão.'
+        },
         colorVariants: [
           {
-            color: "Черный матовый",
+            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
             images: [
               './images/18+/floggerA/floggerA1.webp',
               './images/18+/floggerA/floggerA2.webp',
@@ -1405,9 +1746,95 @@
     let currentModalProduct = null;
     let selectedColorIndex = 0;
 
+    // Получить локализованную строку
+    function getTxt(val) {
+      if (!val) return '';
+      if (typeof val === 'string') return val;
+      return val[currentLang] || val['ru'] || val['en'] || '';
+    }
+
+    // Применение выбранного языка ко всему интерфейсу
+    function setLanguage(lang) {
+      currentLang = lang;
+      const t = I18N[lang] || I18N.ru;
+
+      document.getElementById('t-brand-sub').textContent = t.brandSub;
+      document.getElementById('t-btn-custom').textContent = t.btnCustom;
+      document.getElementById('t-btn-about').textContent = t.btnAbout;
+
+      document.getElementById('t-cat-all').textContent = t.catAll;
+      document.getElementById('t-cat-wallets').textContent = t.catWallets;
+      document.getElementById('t-cat-bags').textContent = t.catBags;
+      document.getElementById('t-cat-accessories').textContent = t.catAccessories;
+      document.getElementById('t-cat-adult').textContent = t.catAdult;
+
+      document.getElementById('t-cart-label').textContent = t.cartLabel;
+
+      // Модалка инд. заказа
+      document.getElementById('t-custom-modal-title').textContent = t.customTitle;
+      document.getElementById('t-custom-modal-sub').textContent = t.customSub;
+      document.getElementById('t-custom-lbl-item').textContent = t.customItemLabel;
+      document.getElementById('custom-item-name').placeholder = t.customItemPlaceholder;
+      document.getElementById('t-custom-lbl-color').textContent = t.customColorLabel;
+      document.getElementById('custom-item-color').placeholder = t.customColorPlaceholder;
+      document.getElementById('t-custom-lbl-desc').textContent = t.customDescLabel;
+      document.getElementById('custom-item-desc').placeholder = t.customDescPlaceholder;
+      document.getElementById('t-custom-lbl-method').textContent = t.customMethodLabel;
+      document.getElementById('t-custom-lbl-consent').textContent = t.customConsent;
+      document.getElementById('custom-submit-btn').textContent = t.customSubmit;
+
+      // Модалка О нас
+      document.getElementById('t-about-modal-title').textContent = t.aboutTitle;
+      document.getElementById('t-about-h1').textContent = t.aboutH1;
+      document.getElementById('t-about-p1').textContent = t.aboutP1;
+      document.getElementById('t-about-h2').textContent = t.aboutH2;
+      document.getElementById('t-about-p2').textContent = t.aboutP2;
+      document.getElementById('t-about-h3').textContent = t.aboutH3;
+      document.getElementById('t-about-p3').textContent = t.aboutP3;
+      document.getElementById('t-about-contact-head').textContent = t.aboutContactHead;
+      document.getElementById('t-about-tg-link').textContent = t.aboutTgLink;
+      document.getElementById('t-about-wa-link').textContent = t.aboutWaLink;
+      document.getElementById('about-return-btn').textContent = t.aboutReturn;
+
+      // Модалка карточки товара
+      document.getElementById('t-modal-color-lbl').textContent = t.colorLabel;
+      document.getElementById('item-engraving-label').textContent = 
+        `${t.engravingPlus} (+${formatPrice(ENGRAVING_PRICE_RUB)})`;
+      document.getElementById('t-modal-engraving-lbl').textContent = t.engravingTextLabel;
+      document.getElementById('item-engraving-text').placeholder = t.engravingPlaceholder;
+      document.getElementById('detail-add-btn').textContent = t.addToCartBtn;
+
+      // Модалка корзины
+      document.getElementById('t-cart-modal-title').textContent = t.cartModalTitle;
+      document.getElementById('t-cart-delivery-lbl').textContent = t.deliveryLabel;
+      document.getElementById('t-cart-phone-lbl').textContent = t.phoneLabel;
+      document.getElementById('customer-phone').placeholder = t.phonePlaceholder;
+      document.getElementById('t-cart-comment-lbl').textContent = t.commentLabel;
+      document.getElementById('customer-comment').placeholder = t.commentPlaceholder;
+      document.getElementById('t-cart-consent-lbl').textContent = t.cartConsent;
+      document.getElementById('submit-btn').textContent = t.submitOrderBtn;
+
+      // Обновляем список доставок
+      const deliverySelect = document.getElementById('delivery-method');
+      deliverySelect.innerHTML = t.deliveryOptions.map(opt => 
+        `<option value="${opt.val}">${opt.text}</option>`
+      ).join('');
+
+      onCustomContactTypeChange();
+      renderProducts();
+      updateCartUI();
+
+      if (currentModalProduct) {
+        document.getElementById('detail-title').textContent = getTxt(currentModalProduct.name);
+        document.getElementById('detail-desc').innerHTML = getTxt(currentModalProduct.desc).replace(/\n/g, '<br>');
+        document.getElementById('modal-selected-color-name').textContent = getTxt(currentModalProduct.colorVariants[selectedColorIndex].color);
+      }
+    }
+
     function renderProducts(filter = 'all') {
       const grid = document.getElementById('products-grid');
       grid.innerHTML = '';
+      const t = I18N[currentLang];
 
       const filtered = filter === 'all' 
         ? products 
@@ -1415,13 +1842,15 @@
 
       filtered.forEach(p => {
         const coverImg = (p.colorVariants && p.colorVariants[0] && p.colorVariants[0].images[0]) || '';
+        const title = getTxt(p.name);
+        const desc = getTxt(p.desc);
         
         const swatchesHtml = p.colorVariants && p.colorVariants.length > 1 ? `
           <div class="color-swatches">
             ${p.colorVariants.map((cv, idx) => `
               <div class="color-dot ${idx === 0 ? 'active' : ''}" 
-                   style="background: ${getColorHex(cv.color)};" 
-                   title="${cv.color}"
+                   style="background: ${getColorHex(getTxt(cv.color))};" 
+                   title="${getTxt(cv.color)}"
                    data-product-id="${p.id}"
                    data-color-idx="${idx}">
               </div>
@@ -1433,14 +1862,14 @@
         card.className = 'product-card';
         card.id = `product-card-${p.id}`;
         card.innerHTML = `
-          <img class="product-img" id="img-product-${p.id}" src="${coverImg}" alt="${p.name}" loading="lazy">
+          <img class="product-img" id="img-product-${p.id}" src="${coverImg}" alt="${title}" loading="lazy">
           <div class="product-info">
             <div class="product-category-tag">${getCategoryName(p.category)}</div>
-            <div class="product-title">${p.name}</div>
-            <div class="product-desc">${p.desc}</div>
+            <div class="product-title">${title}</div>
+            <div class="product-desc">${desc}</div>
             <div class="product-price">${formatPrice(p.price)}</div>
             ${swatchesHtml}
-            <button class="add-btn">Выбрать и заказать</button>
+            <button class="add-btn">${t.chooseBtn}</button>
           </div>
         `;
 
@@ -1476,12 +1905,13 @@
     }
 
     function getCategoryName(cat) {
+      const t = I18N[currentLang];
       switch(cat) {
-        case 'wallets': return 'Кошельки';
-        case 'bags': return 'Сумки';
-        case 'accessories': return 'Аксессуары';
-        case 'adult': return '18+';
-        default: return 'Изделие';
+        case 'wallets': return t.catWallets;
+        case 'bags': return t.catBags;
+        case 'accessories': return t.catAccessories;
+        case 'adult': return t.catAdult;
+        default: return 'Item';
       }
     }
 
@@ -1512,16 +1942,17 @@
       const select = document.getElementById('custom-contact-type');
       const label = document.getElementById('custom-contact-label');
       const input = document.getElementById('custom-contact-value');
+      const t = I18N[currentLang];
       
       if (!select || !label || !input) return;
 
       if (select.value === 'WhatsApp') {
-        label.textContent = 'Номер телефона для WhatsApp:*';
-        input.placeholder = '+7 (999) 000-00-00';
+        label.textContent = t.customWaPhoneLabel;
+        input.placeholder = t.phonePlaceholder;
         input.type = 'tel';
         if (input.value.startsWith('@')) input.value = '';
       } else {
-        label.textContent = 'Ваш ник в Telegram:*';
+        label.textContent = t.customTgNickLabel;
         input.placeholder = '@username';
         input.type = 'text';
         
@@ -1532,6 +1963,7 @@
     }
 
     async function submitCustomOrder() {
+      const t = I18N[currentLang];
       const itemName = document.getElementById('custom-item-name').value.trim();
       const itemDesc = document.getElementById('custom-item-desc').value.trim();
       const itemColor = document.getElementById('custom-item-color').value.trim();
@@ -1540,27 +1972,27 @@
       const hasConsent = document.getElementById('custom-consent-check').checked;
 
       if (!hasConsent) {
-        if (tg && tg.showAlert) tg.showAlert('Необходимо согласиться на обработку персональных данных.');
-        else alert('Необходимо согласиться на обработку персональных данных.');
+        if (tg && tg.showAlert) tg.showAlert(t.alertConsent);
+        else alert(t.alertConsent);
         return;
       }
 
       if (!itemName || !itemDesc || !contactValue) {
-        const fieldName = contactType === 'WhatsApp' ? 'телефон для WhatsApp' : 'ник в Telegram';
-        if (tg && tg.showAlert) tg.showAlert(`Пожалуйста, заполните название изделия, описание и ваш ${fieldName}.`);
-        else alert(`Пожалуйста, заполните название изделия, описание и ваш ${fieldName}.`);
+        if (tg && tg.showAlert) tg.showAlert(t.alertCustomFields);
+        else alert(t.alertCustomFields);
         return;
       }
 
       const btn = document.getElementById('custom-submit-btn');
       btn.disabled = true;
-      btn.textContent = 'Отправка заявки...';
+      btn.textContent = t.customSending;
 
       const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-      const userName = user ? (user.username ? `@${user.username}` : user.first_name) : "Неизвестный";
-      const userId = user ? user.id : "Не определен";
+      const userName = user ? (user.username ? `@${user.username}` : user.first_name) : "Guest";
+      const userId = user ? user.id : "Unknown";
 
       let messageText = `✨ <b>ЗАЯВКА НА ИНДИВИДУАЛЬНЫЙ ЗАКАЗ!</b>\n\n`;
+      messageText += `🌐 <b>Язык клиента:</b> ${currentLang.toUpperCase()}\n`;
       messageText += `💼 <b>Изделие:</b> ${itemName}\n`;
       if (itemColor) messageText += `🎨 <b>Цвет/Кожа:</b> ${itemColor}\n`;
       messageText += `📝 <b>Пожелания и детали:</b>\n${itemDesc}\n\n`;
@@ -1579,15 +2011,16 @@
         if (response.ok) {
           trackAnalyticsEvent('custom_order_sent', {
             item_name: itemName,
-            contact_type: contactType
+            contact_type: contactType,
+            lang: currentLang
           });
 
           if (tg && tg.showAlert) {
-            tg.showAlert('✅ Заявка на индивидуальный заказ отправлена! Мастер свяжется с вами для обсуждения деталей.', () => {
+            tg.showAlert(t.alertCustomSuccess, () => {
               closeCustomOrderModal();
             });
           } else {
-            alert('✅ Заявка на индивидуальный заказ отправлена!');
+            alert(t.alertCustomSuccess);
             closeCustomOrderModal();
           }
           document.getElementById('custom-item-name').value = '';
@@ -1599,11 +2032,11 @@
         }
       } catch (err) {
         console.error(err);
-        if (tg && tg.showAlert) tg.showAlert('Ошибка при отправке заявки.');
-        else alert('Ошибка при отправке заявки.');
+        if (tg && tg.showAlert) tg.showAlert(t.alertOrderError);
+        else alert(t.alertOrderError);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Отправить заявку мастеру';
+        btn.textContent = t.customSubmit;
       }
     }
 
@@ -1612,22 +2045,23 @@
       if (!p) return;
       currentModalProduct = p;
       selectedColorIndex = defaultColorIdx;
+      const t = I18N[currentLang];
 
       trackAnalyticsEvent('view_product', {
         product_id: String(p.id),
-        product_name: p.name,
+        product_name: getTxt(p.name),
         price: p.price
       });
 
-      document.getElementById('detail-title').textContent = p.name;
+      document.getElementById('detail-title').textContent = getTxt(p.name);
       document.getElementById('detail-price').textContent = formatPrice(p.price);
-      document.getElementById('detail-desc').innerHTML = p.desc.replace(/\n/g, '<br>');
+      document.getElementById('detail-desc').innerHTML = getTxt(p.desc).replace(/\n/g, '<br>');
 
       const swatchesContainer = document.getElementById('modal-swatches-container');
       swatchesContainer.innerHTML = p.colorVariants.map((cv, idx) => `
         <div class="modal-color-item ${idx === selectedColorIndex ? 'active' : ''}" data-idx="${idx}">
-          <div class="modal-color-dot" style="background: ${getColorHex(cv.color)};"></div>
-          <span>${cv.color}</span>
+          <div class="modal-color-dot" style="background: ${getColorHex(getTxt(cv.color))};"></div>
+          <span>${getTxt(cv.color)}</span>
         </div>
       `).join('');
 
@@ -1635,13 +2069,13 @@
         item.onclick = () => selectModalColor(parseInt(item.dataset.idx, 10));
       });
 
-      document.getElementById('modal-selected-color-name').textContent = p.colorVariants[selectedColorIndex].color;
+      document.getElementById('modal-selected-color-name').textContent = getTxt(p.colorVariants[selectedColorIndex].color);
 
       document.getElementById('item-engraving-check').checked = false;
       document.getElementById('item-engraving-group').style.display = 'none';
       document.getElementById('item-engraving-text').value = '';
       document.getElementById('item-engraving-label').textContent = 
-        `Персональная гравировка (+${formatPrice(ENGRAVING_PRICE_RUB)})`;
+        `${t.engravingPlus} (+${formatPrice(ENGRAVING_PRICE_RUB)})`;
 
       updateGalleryForSelectedColor();
 
@@ -1668,7 +2102,7 @@
       });
 
       if (currentModalProduct && currentModalProduct.colorVariants[idx]) {
-        document.getElementById('modal-selected-color-name').textContent = currentModalProduct.colorVariants[idx].color;
+        document.getElementById('modal-selected-color-name').textContent = getTxt(currentModalProduct.colorVariants[idx].color);
       }
 
       updateGalleryForSelectedColor();
@@ -1684,7 +2118,7 @@
       const dotsContainer = document.getElementById('gallery-dots');
 
       gallery.innerHTML = imgs.map((src, idx) => `
-        <img src="${src}" alt="${currentModalProduct.name} - ${selectedVariant.color} ${idx + 1}" loading="lazy">
+        <img src="${src}" alt="${getTxt(currentModalProduct.name)} - ${getTxt(selectedVariant.color)} ${idx + 1}" loading="lazy">
       `).join('');
 
       gallery.scrollLeft = 0;
@@ -1714,7 +2148,7 @@
       if (!currentModalProduct) return;
 
       const selectedVariant = currentModalProduct.colorVariants[selectedColorIndex];
-      const colorName = selectedVariant.color;
+      const colorName = getTxt(selectedVariant.color);
       const previewImg = selectedVariant.images[0] || '';
 
       const hasEngraving = document.getElementById('item-engraving-check').checked;
@@ -1730,17 +2164,17 @@
         cart.push({
           cartKey: cartKey,
           id: currentModalProduct.id,
-          name: currentModalProduct.name,
+          name: getTxt(currentModalProduct.name),
           image: previewImg,
           priceRub: unitPriceRub,
           color: colorName,
-          engraving: engravingText || (hasEngraving ? 'Да' : null),
+          engraving: engravingText || (hasEngraving ? 'Yes' : null),
           qty: 1
         });
       }
 
       trackAnalyticsEvent('add_to_cart', {
-        product_name: currentModalProduct.name,
+        product_name: getTxt(currentModalProduct.name),
         color: colorName,
         has_engraving: hasEngraving ? 'yes' : 'no'
       });
@@ -1781,8 +2215,9 @@
 
     function renderCartItems() {
       const container = document.getElementById('cart-items-container');
+      const t = I18N[currentLang];
       if (cart.length === 0) {
-        container.innerHTML = '<div class="empty-cart-msg">Корзина пуста</div>';
+        container.innerHTML = `<div class="empty-cart-msg">${t.emptyCart}</div>`;
         return;
       }
 
@@ -1793,7 +2228,7 @@
             <div class="cart-item-title">${item.name}</div>
             <div class="cart-item-options">
               🎨 ${item.color}
-              ${item.engraving ? `<br>✍️ Гравировка: "${item.engraving}"` : ''}
+              ${item.engraving ? `<br>✍️ ${t.engravingPlus}: "${item.engraving}"` : ''}
             </div>
             <div class="cart-item-price">${formatPrice(item.priceRub * item.qty)}</div>
           </div>
@@ -1820,35 +2255,37 @@
     }
 
     async function submitOrder() {
+      const t = I18N[currentLang];
       if (cart.length === 0) return;
 
       const hasConsent = document.getElementById('cart-consent-check').checked;
       if (!hasConsent) {
-        if (tg && tg.showAlert) tg.showAlert('Необходимо согласиться на обработку персональных данных.');
-        else alert('Необходимо согласиться на обработку персональных данных.');
+        if (tg && tg.showAlert) tg.showAlert(t.alertConsent);
+        else alert(t.alertConsent);
         return;
       }
 
       const phone = document.getElementById('customer-phone').value.trim();
       if (!phone) {
-        if (tg && tg.showAlert) tg.showAlert('Пожалуйста, укажите ваш номер телефона.');
-        else alert('Пожалуйста, укажите ваш номер телефона.');
+        if (tg && tg.showAlert) tg.showAlert(t.alertPhone);
+        else alert(t.alertPhone);
         return;
       }
 
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      btn.textContent = 'Отправка...';
+      btn.textContent = t.submittingOrderBtn;
 
       const delivery = document.getElementById('delivery-method').value;
       const comment = document.getElementById('customer-comment').value.trim();
       const itemsTotalRub = cart.reduce((sum, item) => sum + (item.priceRub * item.qty), 0);
 
       const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-      const userName = user ? (user.username ? `@${user.username}` : user.first_name) : "Неизвестный";
-      const userId = user ? user.id : "Не определен";
+      const userName = user ? (user.username ? `@${user.username}` : user.first_name) : "Guest";
+      const userId = user ? user.id : "Unknown";
 
       let messageText = `🔥 <b>НОВЫЙ ЗАКАЗ (KOZHEDELNIKOV)!</b>\n\n`;
+      messageText += `🌐 <b>Язык оформления:</b> ${currentLang.toUpperCase()}\n`;
       messageText += `📋 <b>Состав заказа:</b>\n`;
       
       cart.forEach((item, idx) => {
@@ -1883,15 +2320,16 @@
           trackAnalyticsEvent('order_success', {
             total_rub: itemsTotalRub,
             items_count: cart.length,
-            currency: currentCurrency
+            currency: currentCurrency,
+            lang: currentLang
           });
 
           if (tg && tg.showAlert) {
-            tg.showAlert('✅ Заказ успешно оформлен! Мастер свяжется с вами для уточнения деталей.', () => {
+            tg.showAlert(t.alertOrderSuccess, () => {
               tg.close();
             });
           } else {
-            alert('✅ Заказ успешно оформлен!');
+            alert(t.alertOrderSuccess);
             cart = [];
             updateCartUI();
             closeCartModal();
@@ -1901,14 +2339,15 @@
         }
       } catch (err) {
         console.error(err);
-        if (tg && tg.showAlert) tg.showAlert('Ошибка при отправке заказа.');
-        else alert('Ошибка при отправке заказа.');
+        if (tg && tg.showAlert) tg.showAlert(t.alertOrderError);
+        else alert(t.alertOrderError);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Оформить заказ';
+        btn.textContent = t.submitOrderBtn;
       }
     }
 
+    // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', async () => {
       if (tg) {
         try {
@@ -1917,12 +2356,38 @@
         } catch (e) {}
       }
 
-      // Отправка входа пользователя
-      const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-      trackAnalyticsEvent('app_open', {
-        user_id: user ? String(user.id) : 'unknown',
-        username: user && user.username ? user.username : 'anonymous'
-      });
+      // Определение языка (из Telegram или по умолчанию)
+      const userLang = tg?.initDataUnsafe?.user?.language_code?.toLowerCase() || '';
+      if (userLang.startsWith('pt')) {
+        currentLang = 'pt';
+        currentCurrency = 'BRL';
+      } else if (userLang.startsWith('en')) {
+        currentLang = 'en';
+        currentCurrency = 'USD';
+      } else {
+        currentLang = 'ru';
+        currentCurrency = 'RUB';
+      }
+
+      document.getElementById('language-select').value = currentLang;
+      document.getElementById('currency-select').value = currentCurrency;
+
+      // Слушатель смены языка
+      document.getElementById('language-select').onchange = (e) => {
+        const selected = e.target.value;
+        // Подстраиваем валюту под выбранный язык
+        if (selected === 'pt' && currentCurrency !== 'BRL') {
+          currentCurrency = 'BRL';
+          document.getElementById('currency-select').value = 'BRL';
+        } else if (selected === 'en' && currentCurrency !== 'USD') {
+          currentCurrency = 'USD';
+          document.getElementById('currency-select').value = 'USD';
+        } else if (selected === 'ru' && currentCurrency !== 'RUB') {
+          currentCurrency = 'RUB';
+          document.getElementById('currency-select').value = 'RUB';
+        }
+        setLanguage(selected);
+      };
 
       // Слушатели событий
       document.getElementById('currency-select').onchange = (e) => changeCurrency(e.target.value);
@@ -1948,9 +2413,8 @@
       });
 
       await fetchExchangeRates();
-      renderProducts();
+      setLanguage(currentLang);
     });
   </script>
 </body>
 </html>
-Проверь этот код он рабочий? Работает Aptabase?
