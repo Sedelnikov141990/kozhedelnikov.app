@@ -683,7 +683,7 @@
 
     <!-- Top Action Bar -->
     <div class="top-action-bar">
-      <!-- ISO Alpha-2 Country/Language Selector -->
+      <!-- ISO Alpha-2 Country Selector -->
       <select class="select-pill" id="language-select">
         <option value="RU">🇷🇺 RU</option>
         <option value="US">🇺🇸 US</option>
@@ -862,7 +862,7 @@
     </div>
   </div>
 
-  <!-- Modal: Cart & Delivery -->
+  <!-- Modal: Cart & Delivery & Payment -->
   <div class="modal-overlay" id="cart-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -872,9 +872,16 @@
 
       <div id="cart-items-container"></div>
 
+      <!-- Служба доставки -->
       <div class="form-group">
-        <label class="form-label" id="t-cart-delivery-lbl">Способ получения:</label>
+        <label class="form-label" id="t-cart-delivery-lbl">Способ доставки:*</label>
         <select class="form-select" id="delivery-method"></select>
+      </div>
+
+      <!-- Способ оплаты -->
+      <div class="form-group">
+        <label class="form-label" id="t-cart-payment-lbl">Способ оплаты:*</label>
+        <select class="form-select" id="payment-method"></select>
       </div>
 
       <!-- Поле CEP для Бразилии (BR) -->
@@ -967,6 +974,7 @@
         aboutReturn: 'Вернуться к покупкам',
         cartModalTitle: 'Ваш заказ',
         deliveryLabel: 'Способ доставки:*',
+        paymentLabel: 'Способ оплаты:*',
         cepLabel: 'Почтовый индекс:',
         phoneLabel: 'Номер телефона для связи:*',
         phonePlaceholder: '+7 (999) 000-00-00',
@@ -986,8 +994,13 @@
         deliveryOptions: [
           { val: 'Авиадоставка в РФ', text: '✈️ Авиадоставка в РФ' },
           { val: 'СДЭК по РФ', text: '📦 СДЭК по РФ' },
-          { val: 'Курьер (Uber Доставка)', text: '🚗 Курьер (Uber Доставка)' },
+          { val: 'Курьер (Uber / Яндекс Доставка)', text: '🚗 Курьер (Uber / Яндекс Доставка)' },
           { val: 'Индивидуальная доставка', text: '💬 Согласовать доставку лично с мастером' }
+        ],
+        paymentOptions: [
+          { val: 'СБП (Перевод по номеру телефона / карта РФ)', text: '💳 СБП (Карта РФ / Т-Банк / Сбер)' },
+          { val: 'Bybit UID (USDT перевод 0% комиссии)', text: '🪙 Криптоперевод по Bybit UID (USDT 0%)' },
+          { val: 'Криптовалюта USDT (TRC-20 / TON)', text: '💎 Криптовалюта USDT (TRC-20 / TON / Wallet)' }
         ]
       },
       US: {
@@ -1035,9 +1048,10 @@
         aboutReturn: 'Back to shop',
         cartModalTitle: 'Your Order',
         deliveryLabel: 'Worldwide Shipping Method:*',
+        paymentLabel: 'Payment Method:*',
         cepLabel: 'Postal / ZIP Code:*',
         phoneLabel: 'Contact phone number:*',
-        phonePlaceholder: '+1 (555) 000-0000',
+        phonePlaceholder: '+1 (555) 000-00-00',
         commentLabel: 'Delivery address (Country, City, Street, ZIP):*',
         commentPlaceholder: 'Country, City, Full Street Address, ZIP Code',
         cartConsent: 'I consent to the processing of personal data for order fulfillment',
@@ -1048,13 +1062,18 @@
         alertPhone: 'Please provide your contact phone number.',
         alertAddress: 'Please provide your full shipping address.',
         alertCep: 'Please provide your ZIP/Postal code.',
-        alertOrderSuccess: '✅ Order placed successfully! The artisan will contact you shortly to confirm shipping details.',
+        alertOrderSuccess: '✅ Order placed successfully! The artisan will contact you shortly to confirm payment & shipping details.',
         alertCustomSuccess: '✅ Bespoke request sent! The artisan will contact you to discuss details.',
         alertOrderError: 'Error sending order. Please try again.',
         deliveryOptions: [
           { val: 'Correios EMS Express (5-10 days)', text: '✈️ Correios EMS International Express (5-10 days)' },
           { val: 'Standard Tracked Airmail (10-20 days)', text: '📦 Standard Airmail Tracked (10-20 days)' },
           { val: 'DHL / FedEx International', text: '⚡ DHL / FedEx Priority Courier' }
+        ],
+        paymentOptions: [
+          { val: 'International Card / Stripe / Tribute', text: '💳 Credit / Debit Card (Stripe / Tribute Link)' },
+          { val: 'Bybit UID (USDT 0% fee)', text: '🪙 Crypto Transfer via Bybit UID (USDT 0%)' },
+          { val: 'Crypto Wallet (USDT TRC-20 / TON)', text: '💎 Crypto (USDT TRC-20 / TON / Wallet)' }
         ]
       },
       BR: {
@@ -1102,6 +1121,7 @@
         aboutReturn: 'Voltar à loja',
         cartModalTitle: 'Seu Pedido',
         deliveryLabel: 'Forma de Envio no Brasil:*',
+        paymentLabel: 'Forma de Pagamento:*',
         cepLabel: 'CEP (Código Postal):*',
         phoneLabel: 'Telefone / WhatsApp com DDD:*',
         phonePlaceholder: '+55 (48) 90000-0000',
@@ -1115,7 +1135,7 @@
         alertPhone: 'Por favor, informe seu número de telefone.',
         alertAddress: 'Por favor, informe seu endereço completo de entrega.',
         alertCep: 'Por favor, informe o seu CEP para cálculo do envio.',
-        alertOrderSuccess: '✅ Pedido realizado com sucesso! O artesão entrará em contato via WhatsApp/Telegram para confirmar o envio.',
+        alertOrderSuccess: '✅ Pedido realizado com sucesso! O artesão entrará em contato via WhatsApp/Telegram para envio dos dados de pagamento e confirmação.',
         alertCustomSuccess: '✅ Solicitação enviada! Entraremos em contato em breve para alinhar os detalhes.',
         alertOrderError: 'Erro ao enviar pedido. Tente novamente.',
         deliveryOptions: [
@@ -1124,6 +1144,12 @@
           { val: 'Correios PAC (Econômico)', text: '📦 Correios PAC (Econômico)' },
           { val: 'Transportadora Jadlog / Loggi', text: '🚚 Transportadora (Jadlog / Melhor Envio)' },
           { val: 'Retirada no Ateliê', text: '📍 Retirada pessoalmente no Ateliê' }
+        ],
+        paymentOptions: [
+          { val: 'PIX (Chave Aleatória / QR Code)', text: '⚡ PIX (Chave Aleatória / Instantâneo)' },
+          { val: 'Cartão de Crédito (Link Mercado Pago / Parcelado)', text: '💳 Cartão de Crédito (Link de Pagamento / Parcelado)' },
+          { val: 'Bybit UID / Cripto (USDT)', text: '🪙 Cripto / Transferência Bybit UID (USDT 0%)' },
+          { val: 'Dinheiro (Na retirada)', text: '💵 Dinheiro (Apenas Retirada no Ateliê)' }
         ]
       }
     };
@@ -1376,8 +1402,8 @@
         price: 17660, 
         desc: {
           RU: 'Вместительный клатч на замке. Ручной шов.',
-          en: 'Spacious zippered leather organizer for smartphone, cards, and passports.',
-          pt: 'Bolsa de mão/clutch com zíper resistente para smartphone, passaportes e cartões.'
+          US: 'Spacious zippered leather organizer for smartphone, cards, and passports.',
+          BR: 'Bolsa de mão/clutch com zíper resistente para smartphone, passaportes e cartões.'
         },
         colorVariants: [
           {
@@ -1688,7 +1714,6 @@
       currentCountry = countryCode;
       const t = I18N[countryCode] || I18N.RU;
 
-      // Обновляем ISO атрибут документа
       document.documentElement.lang = t.htmlLang;
 
       document.getElementById('t-brand-sub').textContent = t.brandSub;
@@ -1740,6 +1765,7 @@
       // Модалка корзины
       document.getElementById('t-cart-modal-title').textContent = t.cartModalTitle;
       document.getElementById('t-cart-delivery-lbl').textContent = t.deliveryLabel;
+      document.getElementById('t-cart-payment-lbl').textContent = t.paymentLabel;
       document.getElementById('t-cart-phone-lbl').textContent = t.phoneLabel;
       document.getElementById('customer-phone').placeholder = t.phonePlaceholder;
       document.getElementById('t-cart-comment-lbl').textContent = t.commentLabel;
@@ -1759,6 +1785,12 @@
       // Обновляем список доставок
       const deliverySelect = document.getElementById('delivery-method');
       deliverySelect.innerHTML = t.deliveryOptions.map(opt => 
+        `<option value="${opt.val}">${opt.text}</option>`
+      ).join('');
+
+      // Обновляем список способов оплаты
+      const paymentSelect = document.getElementById('payment-method');
+      paymentSelect.innerHTML = t.paymentOptions.map(opt => 
         `<option value="${opt.val}">${opt.text}</option>`
       ).join('');
 
@@ -2236,6 +2268,7 @@
       btn.textContent = t.submittingOrderBtn;
 
       const delivery = document.getElementById('delivery-method').value;
+      const payment = document.getElementById('payment-method').value;
       const itemsTotalRub = cart.reduce((sum, item) => sum + (item.priceRub * item.qty), 0);
 
       const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
@@ -2243,7 +2276,7 @@
       const userId = user ? user.id : "Unknown";
 
       let messageText = `🔥 <b>НОВЫЙ ЗАКАЗ (KOZHEDELNIKOV)!</b>\n\n`;
-      messageText += `🌐 <b>Страна / Регион (ISO):</b> ${currentCountry}\n`;
+      messageText += `🌐 <b>Страна (ISO Alpha-2):</b> ${currentCountry}\n`;
       messageText += `📋 <b>Состав заказа:</b>\n`;
       
       cart.forEach((item, idx) => {
@@ -2257,12 +2290,13 @@
       const totalUSD = (itemsTotalRub * exchangeRates.USD).toFixed(0);
       const totalBRL = (itemsTotalRub * exchangeRates.BRL).toFixed(0);
 
-      messageText += `\n🚚 <b>Служба доставки:</b> ${delivery}\n`;
+      messageText += `\n🚚 <b>Доставка:</b> ${delivery}\n`;
+      messageText += `💳 <b>Способ оплаты:</b> ${payment}\n`;
       if (cep) messageText += `📮 <b>CEP (Бразилия):</b> <code>${cep}</code>\n`;
       messageText += `📍 <b>Адрес / Детали:</b> ${comment}\n`;
       messageText += `📞 <b>Телефон:</b> <code>${phone}</code>\n`;
       messageText += `\n💰 <b>ИТОГО К ОПЛАТЕ:</b> <b>${itemsTotalRub.toLocaleString()} ₽</b> (~$${totalUSD} USD / R$ ${totalBRL} BRL)\n`;
-      messageText += `💳 <b>Выбранная валюта:</b> ${currentCurrency}\n\n`;
+      messageText += `💵 <b>Валюта расчета:</b> ${currentCurrency}\n\n`;
       messageText += `👤 <b>Покупатель:</b> ${userName}\n`;
       messageText += `🆔 <b>Telegram ID:</b> <code>${userId}</code>`;
 
@@ -2281,7 +2315,8 @@
             items_count: cart.length,
             currency: currentCurrency,
             country: currentCountry,
-            delivery: delivery
+            delivery: delivery,
+            payment: payment
           });
 
           if (tg && tg.showAlert) {
@@ -2315,7 +2350,7 @@
         } catch (e) {}
       }
 
-      // Определение страны/языка по профилю Telegram
+      // Определение страны/языка по ISO Alpha-2
       const userLang = tg?.initDataUnsafe?.user?.language_code?.toLowerCase() || '';
       if (userLang.startsWith('pt')) {
         currentCountry = 'BR';
