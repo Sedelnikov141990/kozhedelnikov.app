@@ -374,6 +374,7 @@
       border-top: 1px solid var(--border-color);
       transform: translateY(100%);
       transition: transform 0.3s ease;
+      position: relative;
     }
 
     .modal-overlay.active .modal-content {
@@ -401,6 +402,34 @@
       color: var(--text-muted);
       font-size: 24px;
       cursor: pointer;
+    }
+
+    /* Floating Outside Close Button for Product Detail Modal */
+    .floating-close-btn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(28, 24, 21, 0.85);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 350;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .floating-close-btn:active {
+      transform: scale(0.9);
+      background: var(--accent-color);
+      color: #12100e;
     }
 
     .gallery-wrapper {
@@ -776,12 +805,14 @@
     </div>
   </div>
 
-  <!-- Modal: Product Detailed View -->
-  <div class="modal-overlay" id="product-detail-modal">
+  <!-- Modal: Product Detailed View with Persistent Floating Close Button -->
+  <div class="modal-overlay" id="product-detail-modal" onclick="onModalOverlayClick(event)">
+    <!-- Крестик вынесен наружу над шторкой: всегда зафиксирован вверху справа -->
+    <button class="floating-close-btn" onclick="closeProductModal()">&times;</button>
+
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title" id="detail-title">Изделие</div>
-        <button class="close-btn" onclick="closeProductModal()">&times;</button>
       </div>
 
       <div class="gallery-wrapper" id="detail-gallery"></div>
@@ -1071,7 +1102,7 @@
           }
         ]
       },
-       { 
+      { 
         id: 1027, 
         category: 'wallets', 
         name: 'Клатч Zipper', 
@@ -1456,7 +1487,6 @@
         input.placeholder = '@username';
         input.type = 'text';
         
-        // Автоматически подставляем ник из Telegram WebApp если поле пустое
         if (!input.value && tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.username) {
           input.value = `@${tg.initDataUnsafe.user.username}`;
         }
@@ -1570,6 +1600,13 @@
       };
 
       document.getElementById('product-detail-modal').classList.add('active');
+    }
+
+    function onModalOverlayClick(e) {
+      // Закрытие при тапе по фону за пределами окна
+      if (e.target.id === 'product-detail-modal') {
+        closeProductModal();
+      }
     }
 
     function selectModalColor(idx) {
