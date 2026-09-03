@@ -683,11 +683,11 @@
 
     <!-- Top Action Bar -->
     <div class="top-action-bar">
-      <!-- Language Selector -->
+      <!-- ISO Alpha-2 Country/Language Selector -->
       <select class="select-pill" id="language-select">
-        <option value="ru">🇷🇺 RU</option>
-        <option value="en">🇬🇧 EN</option>
-        <option value="pt">🇧🇷 PT</option>
+        <option value="RU">🇷🇺 RU</option>
+        <option value="US">🇺🇸 US</option>
+        <option value="BR">🇧🇷 BR</option>
       </select>
 
       <!-- Currency Selector -->
@@ -839,7 +839,6 @@
         <p id="detail-desc" style="font-size: 13px; color: var(--text-muted); line-height: 1.5;"></p>
       </div>
 
-      <!-- Color Swatches Selector in Modal -->
       <div class="form-group">
         <label class="form-label"><span id="t-modal-color-lbl">Цвет кожи:</span> <span id="modal-selected-color-name" style="color: var(--accent-color); font-weight: 600;"></span></label>
         <div class="modal-swatches" id="modal-swatches-container"></div>
@@ -848,7 +847,7 @@
       <div class="form-group">
         <div class="checkbox-group">
           <input type="checkbox" id="item-engraving-check">
-          <label for="item-engraving-check" id="item-engraving-label">Персональная гравировка (+500 ₽)</label>
+          <label for="item-engraving-check" id="item-engraving-label">Персональная гравировка (+900 ₽)</label>
         </div>
       </div>
 
@@ -873,13 +872,12 @@
 
       <div id="cart-items-container"></div>
 
-      <!-- Логистический блок -->
       <div class="form-group">
         <label class="form-label" id="t-cart-delivery-lbl">Способ получения:</label>
         <select class="form-select" id="delivery-method"></select>
       </div>
 
-      <!-- Поле CEP для Бразилии (динамически отображается) -->
+      <!-- Поле CEP для Бразилии (BR) -->
       <div class="form-group" id="group-customer-cep" style="display: none;">
         <label class="form-label" id="t-cart-cep-lbl">CEP (Código Postal):*</label>
         <input type="text" class="form-input" id="customer-cep" placeholder="00000-000" maxlength="9">
@@ -909,7 +907,7 @@
 
     // ================= НАСТРОЙКИ =================
     const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbw7_bYZwaNw24Vy2vOTiF20VMP3VYc-744kklMwm6uHhhZJ8BoFVOBnXL7ObwhfApqm-g/exec";
-    const ENGRAVING_PRICE_RUB = 500;
+    const ENGRAVING_PRICE_RUB = 900;
     // =============================================
 
     function trackAnalyticsEvent(name, props = {}) {
@@ -922,9 +920,10 @@
       }
     }
 
-    // ================= СЛОВАРЬ ПЕРЕВОДОВ И ДОСТАВКИ =================
+    // ================= СЛОВАРЬ (ISO ALPHA-2: RU, US, BR) =================
     const I18N = {
-      ru: {
+      RU: {
+        htmlLang: 'ru-RU',
         brandSub: 'Мастерская ручной работы | Бразилия',
         btnCustom: 'Эксклюзив',
         btnAbout: 'О нас',
@@ -967,7 +966,7 @@
         aboutWaLink: 'Сообщение в WhatsApp',
         aboutReturn: 'Вернуться к покупкам',
         cartModalTitle: 'Ваш заказ',
-        deliveryLabel: 'Способ доставки из Бразилии в РФ:*',
+        deliveryLabel: 'Способ доставки:*',
         cepLabel: 'Почтовый индекс:',
         phoneLabel: 'Номер телефона для связи:*',
         phonePlaceholder: '+7 (999) 000-00-00',
@@ -985,12 +984,14 @@
         alertCustomSuccess: '✅ Заявка на индивидуальный заказ отправлена! Мастер свяжется с вами для обсуждения деталей.',
         alertOrderError: 'Ошибка при отправке заказа.',
         deliveryOptions: [
-          { val: 'Транзитная авиадоставка в РФ (через хаб)', text: '✈️ Авиадоставка в РФ (через транзитный хаб)' },
-          { val: 'СДЭК по РФ (из наличия на складе в Москве)', text: '📦 СДЭК по РФ (если позиция в наличии в Москве)' },
-          { val: 'Индивидуальная доставка (согласовать с мастером)', text: '💬 Согласовать доставку лично с мастером' }
+          { val: 'Авиадоставка в РФ', text: '✈️ Авиадоставка в РФ' },
+          { val: 'СДЭК по РФ', text: '📦 СДЭК по РФ' },
+          { val: 'Курьер (Uber / Яндекс Доставка)', text: '🚗 Курьер (Uber / Яндекс Доставка)' },
+          { val: 'Индивидуальная доставка', text: '💬 Согласовать доставку лично с мастером' }
         ]
       },
-      en: {
+      US: {
+        htmlLang: 'en-US',
         brandSub: 'Handcrafted in Brazil | Worldwide Shipping',
         btnCustom: 'Exclusive',
         btnAbout: 'About Us',
@@ -1033,7 +1034,7 @@
         aboutWaLink: 'Message on WhatsApp',
         aboutReturn: 'Back to shop',
         cartModalTitle: 'Your Order',
-        deliveryLabel: 'Worldwide Shipping Method (from Brazil):*',
+        deliveryLabel: 'Worldwide Shipping Method:*',
         cepLabel: 'Postal / ZIP Code:*',
         phoneLabel: 'Contact phone number:*',
         phonePlaceholder: '+1 (555) 000-0000',
@@ -1056,7 +1057,8 @@
           { val: 'DHL / FedEx International', text: '⚡ DHL / FedEx Priority Courier' }
         ]
       },
-      pt: {
+      BR: {
+        htmlLang: 'pt-BR',
         brandSub: 'Ateliê de Couro Artesanal | Brasil',
         btnCustom: 'Exclusivo',
         btnAbout: 'Sobre Nós',
@@ -1113,10 +1115,11 @@
         alertPhone: 'Por favor, informe seu número de telefone.',
         alertAddress: 'Por favor, informe seu endereço completo de entrega.',
         alertCep: 'Por favor, informe o seu CEP para cálculo do envio.',
-        alertOrderSuccess: '✅ Pedido realizado com sucesso! O artesão entrará em contato via WhatsApp/Telegram com o valor exato do frete (com desconto via Melhor Envio).',
+        alertOrderSuccess: '✅ Pedido realizado com sucesso! O artesão entrará em contato via WhatsApp/Telegram para confirmar o envio.',
         alertCustomSuccess: '✅ Solicitação enviada! Entraremos em contato em breve para alinhar os detalhes.',
         alertOrderError: 'Erro ao enviar pedido. Tente novamente.',
         deliveryOptions: [
+          { val: 'Uber Flash / Entrega Expressa', text: '🚗 Uber Flash / Entrega Expressa' },
           { val: 'Correios SEDEX (Expresso)', text: '⚡ Correios SEDEX (Expresso 1-3 dias úteis)' },
           { val: 'Correios PAC (Econômico)', text: '📦 Correios PAC (Econômico)' },
           { val: 'Transportadora Jadlog / Loggi', text: '🚚 Transportadora (Jadlog / Melhor Envio)' },
@@ -1125,7 +1128,7 @@
       }
     };
 
-    let currentLang = 'ru';
+    let currentCountry = 'RU';
     let currentCurrency = 'USD';
     let exchangeRates = {
       RUB: 1,
@@ -1189,26 +1192,26 @@
       currentCurrency = currency;
       renderProducts();
       updateCartUI();
-      const t = I18N[currentLang];
+      const t = I18N[currentCountry];
       document.getElementById('item-engraving-label').textContent = 
         `${t.engravingPlus} (+${formatPrice(ENGRAVING_PRICE_RUB)})`;
     }
 
-    // Каталог товаров
+    // Каталог товаров с поддержкой локализации
     const products = [
       { 
         id: 101, 
         category: 'accessories', 
-        name: { ru: 'Обложка Driver', en: 'Driver Document Wallet', pt: 'Carteira para Documentos Driver' },
+        name: { RU: 'Обложка Driver', US: 'Driver Document Wallet', BR: 'Carteira para Documentos Driver' },
         price: 9000, 
         desc: {
-          ru: 'Обложка для документов. 3 отдела для паспорта и ПТС. 3 отдела под карты и водительское удостоверение. Удобная кнопка, чтобы не потерять важное. Ручной шов.',
-          en: 'Handcrafted document holder. 3 compartments for passport & vehicle papers, 3 card slots. Solid brass snap button. Saddle stitched.',
-          pt: 'Porta-documentos em couro artesanal. 3 divisórias para passaporte e CRLV, 3 espaços para cartões e CNH. Fecho de pressão confiável. Costura manual.'
+          RU: 'Обложка для документов. 3 отдела для паспорта и ПТС. 3 отдела под карты и водительское удостоверение. Удобная кнопка, чтобы не потерять важное. Ручной шов.',
+          US: 'Handcrafted document holder. 3 compartments for passport & vehicle papers, 3 card slots. Solid brass snap button. Saddle stitched.',
+          BR: 'Porta-documentos em couro artesanal. 3 divisórias para passaporte e CRLV, 3 espaços para cartões e CNH. Fecho de pressão confiável. Costura manual.'
         },
         colorVariants: [
           {
-            color: { ru: 'Темно-коричневый', en: 'Dark Brown', pt: 'Marrom Escuro' },
+            color: { RU: 'Темно-коричневый', US: 'Dark Brown', BR: 'Marrom Escuro' },
             images: [
               './images/oblozhkaV1/img1.webp',
               './images/oblozhkaV1/img2.webp',
@@ -1218,7 +1221,7 @@
             ]
           },
           {
-            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
+            color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' },
             images: [
               './images/oblozhkaV1/black3.webp',
               './images/oblozhkaV1/black1.webp',
@@ -1232,16 +1235,16 @@
       { 
         id: 102, 
         category: 'wallets', 
-        name: { ru: 'Картхолдер Сompact', en: 'Compact Cardholder', pt: 'Porta-Cartões Compact' },
+        name: { RU: 'Картхолдер Сompact', US: 'Compact Cardholder', BR: 'Porta-Cartões Compact' },
         price: 5690, 
         desc: {
-          ru: 'Компактный картхолдер для 4-6 карт и наличных. Ручной шов.',
-          en: 'Minimalist leather cardholder for 4-6 cards and cash. Saddle stitch.',
-          pt: 'Porta-cartões minimalista para 4 a 6 cartões e cédulas dobradas. Costura manual.'
+          RU: 'Компактный картхолдер для 4-6 карт и наличных. Ручной шов.',
+          US: 'Minimalist leather cardholder for 4-6 cards and cash. Saddle stitch.',
+          BR: 'Porta-cartões minimalista para 4 a 6 cartões e cédulas dobradas. Costura manual.'
         },
         colorVariants: [
           {
-            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
+            color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' },
             images: [
               './images/Wallet/Cartholder/Black/cartholderM2.webp',
               './images/Wallet/Cartholder/Black/cartholderM1.webp',
@@ -1255,16 +1258,16 @@
       { 
         id: 1022, 
         category: 'wallets', 
-        name: { ru: 'Картхолдер Travel', en: 'Travel Cardholder', pt: 'Porta-Cartões Travel' },
+        name: { RU: 'Картхолдер Travel', US: 'Travel Cardholder', BR: 'Porta-Cartões Travel' },
         price: 7900, 
         desc: {
-          ru: 'Компактный картхолдер для 6-7 карт и наличных. Ручной шов.',
-          en: 'Compact travel wallet for 6-7 cards and banknotes. Saddle stitched.',
-          pt: 'Carteira compacta para 6 a 7 cartões e cédulas. Ponto celeiro feito à mão.'
+          RU: 'Компактный картхолдер для 6-7 карт и наличных. Ручной шов.',
+          US: 'Compact travel wallet for 6-7 cards and banknotes. Saddle stitched.',
+          BR: 'Carteira compacta para 6 a 7 cartões e cédulas. Ponto celeiro feito à mão.'
         },
         colorVariants: [
           {
-            color: { ru: 'Коричневый', en: 'Brown', pt: 'Marrom' },
+            color: { RU: 'Коричневый', US: 'Brown', BR: 'Marrom' },
             images: [
               './images/Wallet/Cartholder/Brown/cartholderB1.webp',
               './images/Wallet/Cartholder/Brown/cartholderB2.webp',
@@ -1278,16 +1281,16 @@
       { 
         id: 1023, 
         category: 'wallets', 
-        name: { ru: 'Бифолд Classic', en: 'Classic Bifold', pt: 'Carteira Bifold Classic' },
+        name: { RU: 'Бифолд Classic', US: 'Classic Bifold', BR: 'Carteira Bifold Classic' },
         price: 10690, 
         desc: {
-          ru: 'Компактный кошелек вмещает 6-8 карт и купюры. Ручной шов.',
-          en: 'Slim bifold wallet holding 6-8 cards and full-size bills. Hand-sewn.',
-          pt: 'Carteira bifold clássica que comporta 6 a 8 cartões e notas abertas. Costura manual.'
+          RU: 'Компактный кошелек вмещает 6-8 карт и купюры. Ручной шов.',
+          US: 'Slim bifold wallet holding 6-8 cards and full-size bills. Hand-sewn.',
+          BR: 'Carteira bifold clássica que comporta 6 a 8 cartões e notas abertas. Costura manual.'
         },
         colorVariants: [
           {
-            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
+            color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' },
             images: [
               './images/Wallet/Bifold2/Bifold2A5.webp',
               './images/Wallet/Bifold2/Bifold2A2.webp',
@@ -1300,16 +1303,16 @@
       { 
         id: 1024, 
         category: 'wallets', 
-        name: { ru: 'Кошелёк Classic', en: 'Classic Wallet', pt: 'Carteira Masculina Classic' },
+        name: { RU: 'Кошелёк Classic', US: 'Classic Wallet', BR: 'Carteira Masculina Classic' },
         price: 12550, 
         desc: {
-          ru: 'Классический кошелек вмещает 7-10 карт и купюры. Ручной шов.',
-          en: 'Full-size classic wallet for 7-10 cards and bills. Durable saddle stitch.',
-          pt: 'Carteira tradicional espaçosa para 7 a 10 cartões e dinheiro. Couro premium.'
+          RU: 'Классический кошелек вмещает 7-10 карт и купюры. Ручной шов.',
+          US: 'Full-size classic wallet for 7-10 cards and bills. Durable saddle stitch.',
+          BR: 'Carteira tradicional espaçosa para 7 a 10 cartões e dinheiro. Couro premium.'
         },
         colorVariants: [
           {
-            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
+            color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' },
             images: [
               './images/Wallet/Bifold/BifoldA2.webp',
               './images/Wallet/Bifold/BifoldA1.webp',
@@ -1323,16 +1326,16 @@
       { 
         id: 1025, 
         category: 'wallets', 
-        name: { ru: 'Картхолдер New', en: 'New Pocket Cardholder', pt: 'Porta-Cartões New' },
+        name: { RU: 'Картхолдер New', US: 'New Pocket Cardholder', BR: 'Porta-Cartões New' },
         price: 4000, 
         desc: {
-          ru: 'Компактный картхолдер вмещает 3-4 карты и купюры. Ручной шов.',
-          en: 'Ultra-slim pocket sleeve for 3-4 cards and folded cash. Hand-stitched.',
-          pt: 'Porta-cartões extra fino para 3 a 4 cartões e notas dobradas. Costurado à mão.'
+          RU: 'Компактный картхолдер вмещает 3-4 карты и купюры. Ручной шов.',
+          US: 'Ultra-slim pocket sleeve for 3-4 cards and folded cash. Hand-stitched.',
+          BR: 'Porta-cartões extra fino para 3 a 4 cartões e notas dobradas. Costurado à mão.'
         },
         colorVariants: [
           {
-            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
+            color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' },
             images: [
               './images/Wallet/Cartholder2/Cartholder2A1.webp',
               './images/Wallet/Cartholder2/Cartholder2A2.webp',
@@ -1345,16 +1348,16 @@
       { 
         id: 1026, 
         category: 'wallets', 
-        name: { ru: 'Кошелёк Mini', en: 'Mini Pocket Wallet', pt: 'Mini Carteira Pocket' },
+        name: { RU: 'Кошелёк Mini', US: 'Mini Pocket Wallet', BR: 'Mini Carteira Pocket' },
         price: 10450, 
         desc: {
-          ru: 'Компактный кошелёк вмещает 5-6 карт и купюры. Ручной шов.',
-          en: 'Compact daily wallet for 5-6 cards and cash. Premium leather.',
-          pt: 'Carteira de bolso prática para 5 a 6 cartões e cédulas. Couro nobre.'
+          RU: 'Компактный кошелёк вмещает 5-6 карт и купюры. Ручной шов.',
+          US: 'Compact daily wallet for 5-6 cards and cash. Premium leather.',
+          BR: 'Carteira de bolso prática para 5 a 6 cartões e cédulas. Couro nobre.'
         },
         colorVariants: [
           {
-            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
+            color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' },
             images: [
               './images/Wallet/WalletM/WalletM1.webp',
               './images/Wallet/WalletM/WalletM2.webp',
@@ -1369,16 +1372,16 @@
       { 
         id: 1027, 
         category: 'wallets', 
-        name: { ru: 'Клатч Zipper', en: 'Zipper Leather Clutch', pt: 'Clutch com Zíper' },
+        name: { RU: 'Клатч Zipper', US: 'Zipper Leather Clutch', BR: 'Clutch com Zíper' },
         price: 17660, 
         desc: {
-          ru: 'Вместительный клатч на замке. Ручной шов.',
+          RU: 'Вместительный клатч на замке. Ручной шов.',
           en: 'Spacious zippered leather organizer for smartphone, cards, and passports.',
           pt: 'Bolsa de mão/clutch com zíper resistente para smartphone, passaportes e cartões.'
         },
         colorVariants: [
           {
-            color: { ru: 'Коричневый, Черный', en: 'Brown & Black', pt: 'Marrom e Preto' },
+            color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' },
             images: [
               './images/Wallet/KlatchA/KlatchA1.webp',
               './images/Wallet/KlatchA/KlatchA2.webp',
@@ -1393,16 +1396,16 @@
       { 
         id: 103, 
         category: 'wallets', 
-        name: { ru: 'Лонгер Moscow', en: 'Moscow Long Wallet', pt: 'Carteira Longa Moscow' },
+        name: { RU: 'Лонгер Moscow', US: 'Moscow Long Wallet', BR: 'Carteira Longa Moscow' },
         price: 15000, 
         desc: {
-          ru: 'Вместительный лонгер для купюр, карт и авиабилетов. Карман на молнии, 6 отделений для карточек, два отделения под купюры.',
-          en: 'Spacious travel long wallet for boarding passes, cash, and smartphone. Zipper pocket, 6 card slots.',
-          pt: 'Carteira longa de viagem para passaporte, passagens aéreas e celular. Bolso com zíper e 6 slots para cartões.'
+          RU: 'Вместительный лонгер для купюр, карт и авиабилетов. Карман на молнии, 6 отделений для карточек, два отделения под купюры.',
+          US: 'Spacious travel long wallet for boarding passes, cash, and smartphone. Zipper pocket, 6 card slots.',
+          BR: 'Carteira longa de viagem para passaporte, passagens aéreas e celular. Bolso com zíper e 6 slots para cartões.'
         },
         colorVariants: [
           {
-            color: { ru: 'Коричневый, зеленый', en: 'Brown & Green', pt: 'Marrom e Verde' },
+            color: { RU: 'Коричневый, зеленый', US: 'Brown & Green', BR: 'Marrom e Verde' },
             images: [
               './images/Wallet/longer/Brown/longerB1.webp',
               './images/Wallet/longer/Brown/longerB2.webp',
@@ -1412,7 +1415,7 @@
             ]
           },
           {
-            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
+            color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' },
             images: [
               './images/Wallet/longer/Black/longerA1.webp',
               './images/Wallet/longer/Black/longerA2.webp',
@@ -1426,16 +1429,16 @@
       { 
         id: 201, 
         category: 'bags', 
-        name: { ru: 'Деловая сумка «Kos»', en: 'Kos Business Messenger Bag', pt: 'Bolsa Carteiro Kos' },
+        name: { RU: 'Деловая сумка «Kos»', US: 'Kos Business Messenger Bag', BR: 'Bolsa Carteiro Kos' },
         price: 36000, 
         desc: {
-          ru: 'Кожаная сумка под формат А5. Два основных отделения, карманы для печати, лупы, мелочей и задний отсек на молнии для телефона. Удобно и функционально.',
-          en: 'Premium A5 shoulder bag with two compartments, quick-access pockets, and rear zippered phone pocket.',
-          pt: 'Bolsa transversal formato A5 em couro encorpado com divisórias organizadoras e bolso traseiro com zíper.'
+          RU: 'Кожаная сумка под формат А5. Два основных отделения, карманы для печати, лупы, мелочей и задний отсек на молнии для телефона. Удобно и функционально.',
+          US: 'Premium A5 shoulder bag with two compartments, quick-access pockets, and rear zippered phone pocket.',
+          BR: 'Bolsa transversal formato A5 em couro encorpado com divisórias organizadoras e bolso traseiro com zíper.'
         },
         colorVariants: [
           {
-            color: { ru: 'Коричневый', en: 'Brown', pt: 'Marrom' },
+            color: { RU: 'Коричневый', US: 'Brown', BR: 'Marrom' },
             images: [
               './images/bagmen/bodykos/kos1.webp',
               './images/bagmen/bodykos/kos2.webp',
@@ -1445,7 +1448,7 @@
             ]
           },
           {
-            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
+            color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' },
             images: ['./images/bagmen/bodykos/kos1.webp']
           }
         ]
@@ -1453,16 +1456,16 @@
       { 
         id: 202, 
         category: 'bags', 
-        name: { ru: 'Рюкзак «Travel»', en: 'Travel Convertible Backpack', pt: 'Mochila Conversível Travel' },
+        name: { RU: 'Рюкзак «Travel»', US: 'Travel Convertible Backpack', BR: 'Mochila Conversível Travel' },
         price: 38500, 
         desc: {
-          ru: 'Премиальный кожаный рюкзак-трансформер: легко превращается в элегантную сумку. Вместительное основное отделение, карман на молнии и безупречный стиль.',
-          en: 'Transformer leather backpack that easily converts into an elegant shoulder bag. Roomy main compartment.',
-          pt: 'Mochila conversível que se transforma facilmente em bolsa de ombro sofisticada. Espaço amplo e forro premium.'
+          RU: 'Премиальный кожаный рюкзак-трансформер: легко превращается в элегантную сумку. Вместительное основное отделение, карман на молнии и безупречный стиль.',
+          US: 'Transformer leather backpack that easily converts into an elegant shoulder bag. Roomy main compartment.',
+          BR: 'Mochila conversível que se transforma facilmente em bolsa de ombro sofisticada. Espaço amplo e forro premium.'
         },
         colorVariants: [
           {
-            color: { ru: 'Жёлтый', en: 'Mustard Yellow', pt: 'Amarelo Mostarda' },
+            color: { RU: 'Жёлтый', US: 'Mustard Yellow', BR: 'Amarelo Mostarda' },
             images: [
               './images/baggirl/BackpackA/BackpackA1.webp',
               './images/baggirl/BackpackA/BackpackA2.webp',
@@ -1476,16 +1479,16 @@
       { 
         id: 203, 
         category: 'bags', 
-        name: { ru: 'Деловая сумка «Ocean»', en: 'Ocean Crossbody Bag', pt: 'Bolsa Crossbody Ocean' },
+        name: { RU: 'Деловая сумка «Ocean»', US: 'Ocean Crossbody Bag', BR: 'Bolsa Crossbody Ocean' },
         price: 36500, 
         desc: {
-          ru: 'Премиальная кожаная кросс-боди формата А5 для бизнеса и путешествий. Восемь продуманных карманов, регулируемый ремень и безупречный стиль.',
-          en: 'Signature A5 crossbody bag for business and travel. 8 smart pockets and adjustable leather strap.',
-          pt: 'Bolsa transversal formato A5 com 8 compartimentos planejados e alça ajustável em couro legítimo.'
+          RU: 'Премиальная кожаная кросс-боди формата А5 для бизнеса и путешествий. Восемь продуманных карманов, регулируемый ремень и безупречный стиль.',
+          US: 'Signature A5 crossbody bag for business and travel. 8 smart pockets and adjustable leather strap.',
+          BR: 'Bolsa transversal formato A5 com 8 compartimentos planejados e alça ajustável em couro legítimo.'
         },
         colorVariants: [
           {
-            color: { ru: 'Синий', en: 'Deep Blue', pt: 'Azul Petróleo' },
+            color: { RU: 'Синий', US: 'Deep Blue', BR: 'Azul Petróleo' },
             images: [
               './images/baggirl/bodyA/bodyA1.webp',
               './images/baggirl/bodyA/bodyA2.webp',
@@ -1499,16 +1502,16 @@
       { 
         id: 204, 
         category: 'bags', 
-        name: { ru: 'Сумка для вина «Wine»', en: 'Wine Leather Carrier', pt: 'Porta-Vinhos em Couro Wine' },
+        name: { RU: 'Сумка для вина «Wine»', US: 'Wine Leather Carrier', BR: 'Porta-Vinhos em Couro Wine' },
         price: 29950, 
         desc: {
-          ru: 'Премиальная кожаная сумка для двух бутылок вина. Надежная застежка-кнопка, удобный плечевой ремень и красивая эстетика.',
-          en: 'Luxury dual-bottle wine tote with padded separator, secure button strap, and shoulder carrier.',
-          pt: 'Porta-vinhos luxuoso em couro para 2 garrafas com alça de ombro confortável e fecho resistente.'
+          RU: 'Премиальная кожаная сумка для двух бутылок вина. Надежная застежка-кнопка, удобный плечевой ремень и красивая эстетика.',
+          US: 'Luxury dual-bottle wine tote with padded separator, secure button strap, and shoulder carrier.',
+          BR: 'Porta-vinhos luxuoso em couro para 2 garrafas com alça de ombro confortável e fecho resistente.'
         },
         colorVariants: [
           {
-            color: { ru: 'Красный', en: 'Crimson Red', pt: 'Vermelho Carmim' },
+            color: { RU: 'Красный', US: 'Crimson Red', BR: 'Vermelho Carmim' },
             images: [
               './images/baggirl/wine/wine1.webp',
               './images/baggirl/wine/wine2.webp',
@@ -1522,16 +1525,16 @@
       { 
         id: 301, 
         category: 'accessories', 
-        name: { ru: 'Ремень и Брелок', en: 'Belt & Keychain Set', pt: 'Kit Cinto e Chaveiro' },
+        name: { RU: 'Ремень и Брелок', US: 'Belt & Keychain Set', BR: 'Kit Cinto e Chaveiro' },
         price: 12950, 
         desc: {
-          ru: 'Ручная работа из премиальной кожи с пряжкой из латуни: плавная регулировка, надёжная посадка, ширина 38мм — лаконичная элегантность.',
-          en: 'Full-grain 38mm leather belt with solid cast brass buckle paired with a matching brass keychain.',
-          pt: 'Cinto de couro espesso 38mm com fivela de latão maciço e chaveiro artesanal combinando.'
+          RU: 'Ручная работа из премиальной кожи с пряжкой из латуни: плавная регулировка, надёжная посадка, ширина 38мм — лаконичная элегантность.',
+          US: 'Full-grain 38mm leather belt with solid cast brass buckle paired with a matching brass keychain.',
+          BR: 'Cinto de couro espesso 38mm com fivela de latão maciço e chaveiro artesanal combinando.'
         },
         colorVariants: [
           {
-            color: { ru: 'Темно-коричневый', en: 'Dark Brown', pt: 'Marrom Escuro' },
+            color: { RU: 'Темно-коричневый', US: 'Dark Brown', BR: 'Marrom Escuro' },
             images: [
               './images/Belt/beltA/beltA1.webp',
               './images/Belt/beltA/beltA2.webp',
@@ -1541,7 +1544,7 @@
             ]
           },
           {
-            color: { ru: 'Черный', en: 'Black', pt: 'Preto' },
+            color: { RU: 'Черный', US: 'Black', BR: 'Preto' },
             images: ['./images/Belt/beltA/beltA1.webp']
           }
         ]
@@ -1549,28 +1552,28 @@
       { 
         id: 302, 
         category: 'accessories', 
-        name: { ru: 'Обложка и картхолдер', en: 'Passport Cover & Cardholder Set', pt: 'Kit Porta-Passaporte e Cartões' },
+        name: { RU: 'Обложка и картхолдер', US: 'Passport Cover & Cardholder Set', BR: 'Kit Porta-Passaporte e Cartões' },
         price: 7950, 
         desc: {
-          ru: 'Кожаный комплект: обложка для документов с тиснением и компактный кардхолдер для карт и купюр.',
-          en: 'Matching daily set: embossed leather passport protector plus a slim credit cardholder.',
-          pt: 'Conjunto requintado: capa para passaporte em couro e porta-cartões compacto combinando.'
+          RU: 'Кожаный комплект: обложка для документов с тиснением и компактный кардхолдер для карт и купюр.',
+          US: 'Matching daily set: embossed leather passport protector plus a slim credit cardholder.',
+          BR: 'Conjunto requintado: capa para passaporte em couro e porta-cartões compacto combinando.'
         },
         colorVariants: [
           {
-            color: { ru: 'Чёрный', en: 'Black', pt: 'Preto' },
+            color: { RU: 'Чёрный', US: 'Black', BR: 'Preto' },
             images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA2.webp']
           },
           {
-            color: { ru: 'Коричневый', en: 'Brown', pt: 'Marrom' },
+            color: { RU: 'Коричневый', US: 'Brown', BR: 'Marrom' },
             images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA1.webp']
           },
           {
-            color: { ru: 'Жёлтый (Горчица)', en: 'Mustard Yellow', pt: 'Amarelo Mostarda' },
+            color: { RU: 'Жёлтый (Горчица)', US: 'Mustard Yellow', BR: 'Amarelo Mostarda' },
             images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA4.webp']
           },
           {
-            color: { ru: 'Синий', en: 'Blue', pt: 'Azul' },
+            color: { RU: 'Синий', US: 'Blue', BR: 'Azul' },
             images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA5.webp']
           }
         ]
@@ -1578,16 +1581,16 @@
       { 
         id: 303, 
         category: 'accessories', 
-        name: { ru: 'Обложка для паспорта', en: 'Passport Cover Sleeve', pt: 'Capa Protetora para Passaporte' },
+        name: { RU: 'Обложка для паспорта', US: 'Passport Cover Sleeve', BR: 'Capa Protetora para Passaporte' },
         price: 6850, 
         desc: {
-          ru: 'Удобная обложка для паспорта и посадочного талона из натуральной кожи растительного дубления.',
-          en: 'Durable full-grain leather passport case. Protects your most important document in style.',
-          pt: 'Capa durável para passaporte em couro vegetal genuíno. Proteção com estilo e acabamento refinado.'
+          RU: 'Удобная обложка для паспорта и посадочного талона из натуральной кожи растительного дубления.',
+          US: 'Durable full-grain leather passport case. Protects your most important document in style.',
+          BR: 'Capa durável para passaporte em couro vegetal genuíno. Proteção com estilo e acabamento refinado.'
         },
         colorVariants: [
           {
-            color: { ru: 'Чёрный', en: 'Black', pt: 'Preto' },
+            color: { RU: 'Чёрный', US: 'Black', BR: 'Preto' },
             images: ['./images/oblizhkaPC/oblozhkaB/oblozhkaB1.webp']
           }
         ]
@@ -1595,16 +1598,16 @@
       { 
         id: 401, 
         category: 'adult', 
-        name: { ru: 'Портупея Elegance', en: 'Elegance Leather Harness', pt: 'Harness Elegance em Couro' },
+        name: { RU: 'Портупея Elegance', US: 'Elegance Leather Harness', BR: 'Harness Elegance em Couro' },
         price: 9850, 
         desc: {
-          ru: `Портупея создана для того, чтобы подчеркнуть уверенность, элегантность и смелое самовыражение. Регулируемые ремни и усиленная металлическая фурнитура.\n3 ремешка — 29 × 1,5 см\n10 ремешков — 27 × 1,5 см\n3 ремешка — 15 × 1,5 см`,
-          en: `Designed to emphasize confidence and elegance. Fully adjustable straps with heavy-duty metal hardware.\n3 straps — 29 × 1.5 cm\n10 straps — 27 × 1.5 cm\n3 straps — 15 × 1.5 cm`,
-          pt: `Harness artesanal em tiras de couro macio e fivelas reguláveis em metal resistente.\n3 tiras — 29 × 1,5 cm\n10 tiras — 27 × 1,5 cm\n3 tiras — 15 × 1,5 cm`
+          RU: `Портупея создана для того, чтобы подчеркнуть уверенность, элегантность и смелое самовыражение. Регулируемые ремни и усиленная металлическая фурнитура.\n3 ремешка — 29 × 1,5 см\n10 ремешков — 27 × 1,5 см\n3 ремешка — 15 × 1,5 см`,
+          US: `Designed to emphasize confidence and elegance. Fully adjustable straps with heavy-duty metal hardware.\n3 straps — 29 × 1.5 cm\n10 straps — 27 × 1.5 cm\n3 straps — 15 × 1.5 cm`,
+          BR: `Harness artesanal em tiras de couro macio e fivelas reguláveis em metal resistente.\n3 tiras — 29 × 1,5 cm\n10 tiras — 27 × 1,5 cm\n3 tiras — 15 × 1,5 cm`
         },
         colorVariants: [
           {
-            color: { ru: 'Черный', en: 'Black', pt: 'Preto' },
+            color: { RU: 'Черный', US: 'Black', BR: 'Preto' },
             images: [
               './images/18+/portuA/portuAblack1.webp',
               './images/18+/portuA/portuAblack2.webp',
@@ -1613,7 +1616,7 @@
             ]
           },
           {
-            color: { ru: 'Красный глубокий', en: 'Deep Red', pt: 'Vermelho Intenso' },
+            color: { RU: 'Красный глубокий', US: 'Deep Red', BR: 'Vermelho Intenso' },
             images: [
               './images/18+/portuA/portuAred1.webp',
               './images/18+/portuA/portuAred2.webp',
@@ -1626,16 +1629,16 @@
       { 
         id: 402, 
         category: 'adult', 
-        name: { ru: 'Набор из браслетов и манжет на лодыжку', en: 'Wrist & Ankle Leather Cuffs Set', pt: 'Conjunto de Algemas e Tornozeleiras' },
+        name: { RU: 'Набор из браслетов и манжет на лодыжку', US: 'Wrist & Ankle Leather Cuffs Set', BR: 'Conjunto de Algemas e Tornozeleiras' },
         price: 9550, 
         desc: {
-          ru: 'Премиальный комплект кожаных наручников для ценителей эстетики контроля и власти. Надежная фурнитура, безупречное качество и 10 лет гарантии.',
-          en: 'Premium leather restraints set with soft suede lining and solid nickel-free buckles. Built to last.',
-          pt: 'Kit sofisticado de punhos e tornozeleiras em couro legítimo forrado, com ferragens de alta resistência.'
+          RU: 'Премиальный комплект кожаных наручников для ценителей эстетики контроля и власти. Надежная фурнитура, безупречное качество и 10 лет гарантии.',
+          US: 'Premium leather restraints set with soft suede lining and solid nickel-free buckles. Built to last.',
+          BR: 'Kit sofisticado de punhos e tornozeleiras em couro legítimo forrado, com ferragens de alta resistência.'
         },
         colorVariants: [
           {
-            color: { ru: 'Черный, красный', en: 'Black & Red', pt: 'Preto e Vermelho' },
+            color: { RU: 'Черный, красный', US: 'Black & Red', BR: 'Preto e Vermelho' },
             images: [
               './images/18+/18A1.webp',
               './images/18+/18A2.webp',
@@ -1649,16 +1652,16 @@
       { 
         id: 403, 
         category: 'adult', 
-        name: { ru: 'Флоггер Craft', en: 'Craft Leather Flogger', pt: 'Flogger em Couro Craft' },
+        name: { RU: 'Флоггер Craft', US: 'Craft Leather Flogger', BR: 'Flogger em Couro Craft' },
         price: 8550, 
         desc: {
-          ru: 'Искушающая кожаная плетка ручной работы — баланс нежности и абсолютной власти. Премиальный черный глянец, шелковистые хвосты и чистая страсть.',
-          en: 'Balanced handcrafted leather flogger. Supple leather falls, wrapped grip, and luxurious tactile feedback.',
-          pt: 'Chicote flogger artesanal em tiras de couro macio e empunhadura firme revestida à mão.'
+          RU: 'Искушающая кожаная плетка ручной работы — баланс нежности и абсолютной власти. Премиальный черный глянец, шелковистые хвосты и чистая страсть.',
+          US: 'Balanced handcrafted leather flogger. Supple leather falls, wrapped grip, and luxurious tactile feedback.',
+          BR: 'Chicote flogger artesanal em tiras de couro macio e empunhadura firme revestida à mão.'
         },
         colorVariants: [
           {
-            color: { ru: 'Черный матовый', en: 'Matte Black', pt: 'Preto Fosco' },
+            color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' },
             images: [
               './images/18+/floggerA/floggerA1.webp',
               './images/18+/floggerA/floggerA2.webp',
@@ -1678,12 +1681,15 @@
     function getTxt(val) {
       if (!val) return '';
       if (typeof val === 'string') return val;
-      return val[currentLang] || val['ru'] || val['en'] || '';
+      return val[currentCountry] || val['RU'] || val['US'] || '';
     }
 
-    function setLanguage(lang) {
-      currentLang = lang;
-      const t = I18N[lang] || I18N.ru;
+    function setLanguage(countryCode) {
+      currentCountry = countryCode;
+      const t = I18N[countryCode] || I18N.RU;
+
+      // Обновляем ISO атрибут документа
+      document.documentElement.lang = t.htmlLang;
 
       document.getElementById('t-brand-sub').textContent = t.brandSub;
       document.getElementById('t-btn-custom').textContent = t.btnCustom;
@@ -1741,9 +1747,9 @@
       document.getElementById('t-cart-consent-lbl').textContent = t.cartConsent;
       document.getElementById('submit-btn').textContent = t.submitOrderBtn;
 
-      // CEP поле для Бразилии
+      // CEP поле для Бразилии (BR)
       const cepGroup = document.getElementById('group-customer-cep');
-      if (lang === 'pt') {
+      if (countryCode === 'BR') {
         cepGroup.style.display = 'block';
         document.getElementById('t-cart-cep-lbl').textContent = t.cepLabel;
       } else {
@@ -1770,7 +1776,7 @@
     function renderProducts(filter = 'all') {
       const grid = document.getElementById('products-grid');
       grid.innerHTML = '';
-      const t = I18N[currentLang];
+      const t = I18N[currentCountry];
 
       const filtered = filter === 'all' 
         ? products 
@@ -1841,7 +1847,7 @@
     }
 
     function getCategoryName(cat) {
-      const t = I18N[currentLang];
+      const t = I18N[currentCountry];
       switch(cat) {
         case 'wallets': return t.catWallets;
         case 'bags': return t.catBags;
@@ -1878,7 +1884,7 @@
       const select = document.getElementById('custom-contact-type');
       const label = document.getElementById('custom-contact-label');
       const input = document.getElementById('custom-contact-value');
-      const t = I18N[currentLang];
+      const t = I18N[currentCountry];
       
       if (!select || !label || !input) return;
 
@@ -1899,7 +1905,7 @@
     }
 
     async function submitCustomOrder() {
-      const t = I18N[currentLang];
+      const t = I18N[currentCountry];
       const itemName = document.getElementById('custom-item-name').value.trim();
       const itemDesc = document.getElementById('custom-item-desc').value.trim();
       const itemColor = document.getElementById('custom-item-color').value.trim();
@@ -1928,7 +1934,7 @@
       const userId = user ? user.id : "Unknown";
 
       let messageText = `✨ <b>ЗАЯВКА НА ИНДИВИДУАЛЬНЫЙ ЗАКАЗ!</b>\n\n`;
-      messageText += `🌐 <b>Язык клиента:</b> ${currentLang.toUpperCase()}\n`;
+      messageText += `🌐 <b>Страна / Регион (ISO):</b> ${currentCountry}\n`;
       messageText += `💼 <b>Изделие:</b> ${itemName}\n`;
       if (itemColor) messageText += `🎨 <b>Цвет/Кожа:</b> ${itemColor}\n`;
       messageText += `📝 <b>Пожелания и детали:</b>\n${itemDesc}\n\n`;
@@ -1948,7 +1954,7 @@
           trackAnalyticsEvent('custom_order_sent', {
             item_name: itemName,
             contact_type: contactType,
-            lang: currentLang
+            country: currentCountry
           });
 
           if (tg && tg.showAlert) {
@@ -1981,7 +1987,7 @@
       if (!p) return;
       currentModalProduct = p;
       selectedColorIndex = defaultColorIdx;
-      const t = I18N[currentLang];
+      const t = I18N[currentCountry];
 
       trackAnalyticsEvent('view_product', {
         product_id: String(p.id),
@@ -2151,7 +2157,7 @@
 
     function renderCartItems() {
       const container = document.getElementById('cart-items-container');
-      const t = I18N[currentLang];
+      const t = I18N[currentCountry];
       if (cart.length === 0) {
         container.innerHTML = `<div class="empty-cart-msg">${t.emptyCart}</div>`;
         return;
@@ -2191,7 +2197,7 @@
     }
 
     async function submitOrder() {
-      const t = I18N[currentLang];
+      const t = I18N[currentCountry];
       if (cart.length === 0) return;
 
       const hasConsent = document.getElementById('cart-consent-check').checked;
@@ -2216,7 +2222,7 @@
       }
 
       let cep = '';
-      if (currentLang === 'pt') {
+      if (currentCountry === 'BR') {
         cep = document.getElementById('customer-cep').value.trim();
         if (!cep) {
           if (tg && tg.showAlert) tg.showAlert(t.alertCep);
@@ -2237,7 +2243,7 @@
       const userId = user ? user.id : "Unknown";
 
       let messageText = `🔥 <b>НОВЫЙ ЗАКАЗ (KOZHEDELNIKOV)!</b>\n\n`;
-      messageText += `🌐 <b>Регион / Язык:</b> ${currentLang.toUpperCase()}\n`;
+      messageText += `🌐 <b>Страна / Регион (ISO):</b> ${currentCountry}\n`;
       messageText += `📋 <b>Состав заказа:</b>\n`;
       
       cart.forEach((item, idx) => {
@@ -2274,7 +2280,7 @@
             total_rub: itemsTotalRub,
             items_count: cart.length,
             currency: currentCurrency,
-            lang: currentLang,
+            country: currentCountry,
             delivery: delivery
           });
 
@@ -2309,39 +2315,39 @@
         } catch (e) {}
       }
 
-      // Определение языка (из Telegram или по умолчанию)
+      // Определение страны/языка по профилю Telegram
       const userLang = tg?.initDataUnsafe?.user?.language_code?.toLowerCase() || '';
       if (userLang.startsWith('pt')) {
-        currentLang = 'pt';
+        currentCountry = 'BR';
         currentCurrency = 'BRL';
       } else if (userLang.startsWith('en')) {
-        currentLang = 'en';
+        currentCountry = 'US';
         currentCurrency = 'USD';
       } else {
-        currentLang = 'ru';
+        currentCountry = 'RU';
         currentCurrency = 'RUB';
       }
 
-      document.getElementById('language-select').value = currentLang;
+      document.getElementById('language-select').value = currentCountry;
       document.getElementById('currency-select').value = currentCurrency;
 
-      // Слушатель смены языка
+      // Переключение ISO Alpha-2 селектора
       document.getElementById('language-select').onchange = (e) => {
         const selected = e.target.value;
-        if (selected === 'pt' && currentCurrency !== 'BRL') {
+        if (selected === 'BR' && currentCurrency !== 'BRL') {
           currentCurrency = 'BRL';
           document.getElementById('currency-select').value = 'BRL';
-        } else if (selected === 'en' && currentCurrency !== 'USD') {
+        } else if (selected === 'US' && currentCurrency !== 'USD') {
           currentCurrency = 'USD';
           document.getElementById('currency-select').value = 'USD';
-        } else if (selected === 'ru' && currentCurrency !== 'RUB') {
+        } else if (selected === 'RU' && currentCurrency !== 'RUB') {
           currentCurrency = 'RUB';
           document.getElementById('currency-select').value = 'RUB';
         }
         setLanguage(selected);
       };
 
-      // Маска для бразильского CEP (00000-000)
+      // Маска для бразильского индекса CEP (00000-000)
       const cepInput = document.getElementById('customer-cep');
       cepInput.addEventListener('input', (e) => {
         let val = e.target.value.replace(/\D/g, '');
@@ -2375,7 +2381,7 @@
       });
 
       await fetchExchangeRates();
-      setLanguage(currentLang);
+      setLanguage(currentCountry);
     });
   </script>
 </body>
