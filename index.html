@@ -404,7 +404,6 @@
       cursor: pointer;
     }
 
-    /* Floating Outside Close Button for Product Detail Modal */
     .floating-close-btn {
       position: fixed;
       top: 16px;
@@ -620,7 +619,6 @@
       font-size: 14px;
     }
 
-    /* About Modal & Info Cards */
     .about-card {
       background: var(--bg-color);
       border: 1px solid var(--border-color);
@@ -674,27 +672,27 @@
 
     <!-- Top Action Bar in Unified Style -->
     <div class="top-action-bar">
-      <select class="currency-select" id="currency-select" onchange="changeCurrency(this.value)">
+      <select class="currency-select" id="currency-select">
         <option value="USD">$ (USD)</option>
         <option value="RUB">₽ (RUB)</option>
         <option value="BRL">R$ (BRL)</option>
       </select>
 
-      <button class="action-btn" onclick="openCustomOrderModal()">
+      <button class="action-btn" id="header-custom-order-btn">
         <span></span> Эксклюзив
       </button>
 
-      <button class="action-btn" onclick="openAboutModal()">
+      <button class="action-btn" id="header-about-btn">
         <span></span> О нас
       </button>
     </div>
 
     <div class="categories-wrapper">
-      <button class="category-btn active" onclick="filterCategory('all', this)">Все товары</button>
-      <button class="category-btn" onclick="filterCategory('wallets', this)">Кошельки</button>
-      <button class="category-btn" onclick="filterCategory('bags', this)">Сумки</button>
-      <button class="category-btn" onclick="filterCategory('accessories', this)">Аксессуары</button>
-      <button class="category-btn" onclick="filterCategory('adult', this)">18+</button>
+      <button class="category-btn active" data-category="all">Все товары</button>
+      <button class="category-btn" data-category="wallets">Кошельки</button>
+      <button class="category-btn" data-category="bags">Сумки</button>
+      <button class="category-btn" data-category="accessories">Аксессуары</button>
+      <button class="category-btn" data-category="adult">18+</button>
     </div>
   </header>
 
@@ -703,7 +701,7 @@
   </div>
 
   <!-- Floating Cart Bar -->
-  <div class="cart-bar" id="cart-bar" onclick="openCartModal()">
+  <div class="cart-bar" id="cart-bar">
     <div>
       <span>Корзина</span>
       <span class="cart-count-badge" id="cart-count">0</span>
@@ -716,7 +714,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title">Индивидуальный заказ</div>
-        <button class="close-btn" onclick="closeCustomOrderModal()">&times;</button>
+        <button class="close-btn" id="close-custom-order-btn">&times;</button>
       </div>
 
       <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px;">
@@ -740,7 +738,7 @@
 
       <div class="form-group">
         <label class="form-label">Удобный способ связи:</label>
-        <select class="form-select" id="custom-contact-type" onchange="onCustomContactTypeChange()">
+        <select class="form-select" id="custom-contact-type">
           <option value="Telegram">Telegram</option>
           <option value="WhatsApp">WhatsApp</option>
         </select>
@@ -756,7 +754,7 @@
         <label for="custom-consent-check">Я согласен(на) на обработку персональных данных для связи по заказу</label>
       </div>
 
-      <button class="checkout-btn" id="custom-submit-btn" onclick="submitCustomOrder()">
+      <button class="checkout-btn" id="custom-submit-btn">
         Отправить заявку мастеру
       </button>
     </div>
@@ -767,7 +765,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title">О мастерской Kozhedelnikov</div>
-        <button class="close-btn" onclick="closeAboutModal()">&times;</button>
+        <button class="close-btn" id="close-about-btn">&times;</button>
       </div>
 
       <div class="about-card">
@@ -799,16 +797,15 @@
         <span style="color: var(--accent-color);">+7 (913) 392-06-29 ➔</span>
       </a>
 
-      <button class="checkout-btn" style="margin-top: 14px;" onclick="closeAboutModal()">
+      <button class="checkout-btn" id="about-return-btn" style="margin-top: 14px;">
         Вернуться к покупкам
       </button>
     </div>
   </div>
 
   <!-- Modal: Product Detailed View with Persistent Floating Close Button -->
-  <div class="modal-overlay" id="product-detail-modal" onclick="onModalOverlayClick(event)">
-    <!-- Крестик вынесен наружу над шторкой: всегда зафиксирован вверху справа -->
-    <button class="floating-close-btn" onclick="closeProductModal()">&times;</button>
+  <div class="modal-overlay" id="product-detail-modal">
+    <button class="floating-close-btn" id="close-product-btn">&times;</button>
 
     <div class="modal-content">
       <div class="modal-header">
@@ -831,7 +828,7 @@
 
       <div class="form-group">
         <div class="checkbox-group">
-          <input type="checkbox" id="item-engraving-check" onchange="toggleItemEngraving()">
+          <input type="checkbox" id="item-engraving-check">
           <label for="item-engraving-check" id="item-engraving-label">Персональная гравировка (+500 ₽)</label>
         </div>
       </div>
@@ -852,7 +849,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title">Ваш заказ</div>
-        <button class="close-btn" onclick="closeCartModal()">&times;</button>
+        <button class="close-btn" id="close-cart-btn">&times;</button>
       </div>
 
       <div id="cart-items-container"></div>
@@ -882,11 +879,25 @@
         <label for="cart-consent-check">Я согласен(на) на обработку персональных данных для оформления и доставки заказа</label>
       </div>
 
-      <button class="checkout-btn" id="submit-btn" onclick="submitOrder()">Оформить заказ</button>
+      <button class="checkout-btn" id="submit-btn">Оформить заказ</button>
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    // ================= APTABASE АНАЛИТИКА =================
+    import { init as initAptabase, trackEvent } from 'https://cdn.jsdelivr.net/npm/@aptabase/web/+esm';
+    
+    // 👇 ВСТАВЬ СЮДА СВОЙ APP KEY ИЗ ЛИЧНОГО КАБИНЕТА APTABASE (например, "A-EU-1234567890")
+    const APTABASE_APP_KEY = "A-US-0220832996";
+    
+    if (APTABASE_APP_KEY && !APTABASE_APP_KEY.startsWith("ВАШ_")) {
+      try {
+        initAptabase(APTABASE_APP_KEY);
+      } catch (e) {
+        console.warn('Aptabase init error:', e);
+      }
+    }
+
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 
     // ================= НАСТРОЙКИ =================
@@ -1395,7 +1406,8 @@
               <div class="color-dot ${idx === 0 ? 'active' : ''}" 
                    style="background: ${getColorHex(cv.color)};" 
                    title="${cv.color}"
-                   onclick="event.stopPropagation(); changeCardColor(${p.id}, ${idx}, this)">
+                   data-product-id="${p.id}"
+                   data-color-idx="${idx}">
               </div>
             `).join('')}
           </div>
@@ -1405,16 +1417,29 @@
         card.className = 'product-card';
         card.id = `product-card-${p.id}`;
         card.innerHTML = `
-          <img class="product-img" id="img-product-${p.id}" src="${coverImg}" alt="${p.name}" loading="lazy" onclick="openProductModal(${p.id})">
+          <img class="product-img" id="img-product-${p.id}" src="${coverImg}" alt="${p.name}" loading="lazy">
           <div class="product-info">
             <div class="product-category-tag">${getCategoryName(p.category)}</div>
-            <div class="product-title" onclick="openProductModal(${p.id})">${p.name}</div>
+            <div class="product-title">${p.name}</div>
             <div class="product-desc">${p.desc}</div>
             <div class="product-price">${formatPrice(p.price)}</div>
             ${swatchesHtml}
-            <button class="add-btn" onclick="openProductModal(${p.id})">Выбрать и заказать</button>
+            <button class="add-btn">Выбрать и заказать</button>
           </div>
         `;
+
+        // Слушатели событий
+        card.querySelector('.product-img').onclick = () => openProductModal(p.id);
+        card.querySelector('.product-title').onclick = () => openProductModal(p.id);
+        card.querySelector('.add-btn').onclick = () => openProductModal(p.id);
+
+        card.querySelectorAll('.color-dot').forEach(dot => {
+          dot.onclick = (e) => {
+            e.stopPropagation();
+            changeCardColor(p.id, parseInt(dot.dataset.colorIdx, 10), dot);
+          };
+        });
+
         grid.appendChild(card);
       });
     }
@@ -1451,7 +1476,6 @@
       renderProducts(cat);
     }
 
-    // Modal About Handlers
     function openAboutModal() {
       document.getElementById('about-modal').classList.add('active');
     }
@@ -1460,7 +1484,6 @@
       document.getElementById('about-modal').classList.remove('active');
     }
 
-    // Modal Custom Order Handlers
     function openCustomOrderModal() {
       onCustomContactTypeChange();
       document.getElementById('custom-order-modal').classList.add('active');
@@ -1493,7 +1516,6 @@
       }
     }
 
-    // Submit Custom Order with Consent Validation
     async function submitCustomOrder() {
       const itemName = document.getElementById('custom-item-name').value.trim();
       const itemDesc = document.getElementById('custom-item-desc').value.trim();
@@ -1540,6 +1562,14 @@
         });
 
         if (response.ok) {
+          // Отправка в Aptabase
+          try {
+            trackEvent('custom_order_sent', {
+              item_name: itemName,
+              contact_type: contactType
+            });
+          } catch (e) {}
+
           if (tg && tg.showAlert) {
             tg.showAlert('✅ Заявка на индивидуальный заказ отправлена! Мастер свяжется с вами для обсуждения деталей.', () => {
               closeCustomOrderModal();
@@ -1565,12 +1595,20 @@
       }
     }
 
-    // Modal Product Handlers
     function openProductModal(productId, defaultColorIdx = 0) {
       const p = products.find(item => item.id === productId);
       if (!p) return;
       currentModalProduct = p;
       selectedColorIndex = defaultColorIdx;
+
+      // Аналитика: просмотр товара
+      try {
+        trackEvent('view_product', {
+          product_id: String(p.id),
+          product_name: p.name,
+          price: p.price
+        });
+      } catch (e) {}
 
       document.getElementById('detail-title').textContent = p.name;
       document.getElementById('detail-price').textContent = formatPrice(p.price);
@@ -1578,11 +1616,15 @@
 
       const swatchesContainer = document.getElementById('modal-swatches-container');
       swatchesContainer.innerHTML = p.colorVariants.map((cv, idx) => `
-        <div class="modal-color-item ${idx === selectedColorIndex ? 'active' : ''}" onclick="selectModalColor(${idx})">
+        <div class="modal-color-item ${idx === selectedColorIndex ? 'active' : ''}" data-idx="${idx}">
           <div class="modal-color-dot" style="background: ${getColorHex(cv.color)};"></div>
           <span>${cv.color}</span>
         </div>
       `).join('');
+
+      swatchesContainer.querySelectorAll('.modal-color-item').forEach(item => {
+        item.onclick = () => selectModalColor(parseInt(item.dataset.idx, 10));
+      });
 
       document.getElementById('modal-selected-color-name').textContent = p.colorVariants[selectedColorIndex].color;
 
@@ -1600,13 +1642,6 @@
       };
 
       document.getElementById('product-detail-modal').classList.add('active');
-    }
-
-    function onModalOverlayClick(e) {
-      // Закрытие при тапе по фону за пределами окна
-      if (e.target.id === 'product-detail-modal') {
-        closeProductModal();
-      }
     }
 
     function selectModalColor(idx) {
@@ -1689,6 +1724,15 @@
         });
       }
 
+      // Аналитика: добавление в корзину
+      try {
+        trackEvent('add_to_cart', {
+          product_name: currentModalProduct.name,
+          color: colorName,
+          has_engraving: hasEngraving ? 'yes' : 'no'
+        });
+      } catch (e) {}
+
       updateCartUI();
       closeProductModal();
       if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
@@ -1742,12 +1786,16 @@
             <div class="cart-item-price">${formatPrice(item.priceRub * item.qty)}</div>
           </div>
           <div class="qty-controls">
-            <button class="qty-btn" onclick="changeQtyByKey('${item.cartKey}', -1)">-</button>
+            <button class="qty-btn" data-key="${item.cartKey}" data-delta="-1">-</button>
             <span>${item.qty}</span>
-            <button class="qty-btn" onclick="changeQtyByKey('${item.cartKey}', 1)">+</button>
+            <button class="qty-btn" data-key="${item.cartKey}" data-delta="1">+</button>
           </div>
         </div>
       `).join('');
+
+      container.querySelectorAll('.qty-btn').forEach(b => {
+        b.onclick = () => changeQtyByKey(b.dataset.key, parseInt(b.dataset.delta, 10));
+      });
     }
 
     function openCartModal() {
@@ -1759,7 +1807,6 @@
       document.getElementById('cart-modal').classList.remove('active');
     }
 
-    // Submit Regular Cart Order with Consent Validation
     async function submitOrder() {
       if (cart.length === 0) return;
 
@@ -1815,12 +1862,19 @@
         const response = await fetch(ORDER_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            text: messageText
-          })
+          body: JSON.stringify({ text: messageText })
         });
 
         if (response.ok) {
+          // Аналитика: успешный заказ
+          try {
+            trackEvent('order_success', {
+              total_rub: itemsTotalRub,
+              items_count: cart.length,
+              currency: currentCurrency
+            });
+          } catch (e) {}
+
           if (tg && tg.showAlert) {
             tg.showAlert('✅ Заказ успешно оформлен! Мастер свяжется с вами для уточнения деталей.', () => {
               tg.close();
@@ -1844,6 +1898,7 @@
       }
     }
 
+    // Привязка слушателей
     document.addEventListener('DOMContentLoaded', async () => {
       if (tg) {
         try {
@@ -1851,6 +1906,41 @@
           tg.expand();
         } catch (e) {}
       }
+
+      // Событие старта сессии для Aptabase
+      try {
+        const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+        trackEvent('app_open', {
+          user_id: user ? String(user.id) : 'unknown',
+          username: user && user.username ? user.username : 'anonymous'
+        });
+      } catch (e) {}
+
+      // Кнопки шапки и модалок
+      document.getElementById('currency-select').onchange = (e) => changeCurrency(e.target.value);
+      document.getElementById('header-custom-order-btn').onclick = openCustomOrderModal;
+      document.getElementById('header-about-btn').onclick = openAboutModal;
+
+      document.getElementById('close-custom-order-btn').onclick = closeCustomOrderModal;
+      document.getElementById('close-about-btn').onclick = closeAboutModal;
+      document.getElementById('about-return-btn').onclick = closeAboutModal;
+      document.getElementById('close-product-btn').onclick = closeProductModal;
+      document.getElementById('close-cart-btn').onclick = closeCartModal;
+
+      document.getElementById('cart-bar').onclick = openCartModal;
+      document.getElementById('submit-btn').onclick = submitOrder;
+      document.getElementById('custom-submit-btn').onclick = submitCustomOrder;
+      document.getElementById('custom-contact-type').onchange = onCustomContactTypeChange;
+      document.getElementById('item-engraving-check').onchange = toggleItemEngraving;
+
+      document.getElementById('product-detail-modal').onclick = (e) => {
+        if (e.target.id === 'product-detail-modal') closeProductModal();
+      };
+
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.onclick = () => filterCategory(btn.dataset.category, btn);
+      });
+
       await fetchExchangeRates();
       renderProducts();
     });
