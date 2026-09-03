@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Kozhedelnikov | Мастерская кожаных изделий</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Подключение Aptabase Web SDK -->
+  <script src="https://unpkg.com/@aptabase/web@latest/dist/index.global.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
@@ -619,6 +623,7 @@
       font-size: 14px;
     }
 
+    /* About Modal & Info Cards */
     .about-card {
       background: var(--bg-color);
       border: 1px solid var(--border-color);
@@ -883,27 +888,36 @@
     </div>
   </div>
 
-  <script type="module">
-    // ================= APTABASE АНАЛИТИКА =================
-    import { init as initAptabase, trackEvent } from 'https://cdn.jsdelivr.net/npm/@aptabase/web/+esm';
-    
-    // 👇 ВСТАВЬ СЮДА СВОЙ APP KEY ИЗ ЛИЧНОГО КАБИНЕТА APTABASE (например, "A-EU-1234567890")
-    const APTABASE_APP_KEY = "A-US-0220832996";
-    
-    if (APTABASE_APP_KEY && !APTABASE_APP_KEY.startsWith("A-US-0220832996")) {
+  <script>
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+
+    // ================= НАСТРОЙКИ =================
+    const APTABASE_APP_KEY = "A-US-0220832996"; 
+    const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbw7_bYZwaNw24Vy2vOTiF20VMP3VYc-744kklMwm6uHhhZJ8BoFVOBnXL7ObwhfApqm-g/exec";
+    const ENGRAVING_PRICE_RUB = 500;
+    // =============================================
+
+    // Инициализация Aptabase
+    let analyticsEnabled = false;
+    if (window.aptabase && APTABASE_APP_KEY) {
       try {
-        initAptabase(APTABASE_APP_KEY);
+        window.aptabase.init(APTABASE_APP_KEY);
+        analyticsEnabled = true;
       } catch (e) {
         console.warn('Aptabase init error:', e);
       }
     }
 
-    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-
-    // ================= НАСТРОЙКИ =================
-    const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbw7_bYZwaNw24Vy2vOTiF20VMP3VYc-744kklMwm6uHhhZJ8BoFVOBnXL7ObwhfApqm-g/exec";
-    const ENGRAVING_PRICE_RUB = 500;
-    // =============================================
+    // Безопасная отправка событий аналитики
+    function trackAnalyticsEvent(name, props = {}) {
+      if (analyticsEnabled && window.aptabase) {
+        try {
+          window.aptabase.trackEvent(name, props);
+        } catch (e) {
+          console.warn('Analytics event failed:', e);
+        }
+      }
+    }
 
     let currentCurrency = 'USD';
     let exchangeRates = {
@@ -1428,7 +1442,6 @@
           </div>
         `;
 
-        // Слушатели событий
         card.querySelector('.product-img').onclick = () => openProductModal(p.id);
         card.querySelector('.product-title').onclick = () => openProductModal(p.id);
         card.querySelector('.add-btn').onclick = () => openProductModal(p.id);
@@ -1562,13 +1575,10 @@
         });
 
         if (response.ok) {
-          // Отправка в Aptabase
-          try {
-            trackEvent('custom_order_sent', {
-              item_name: itemName,
-              contact_type: contactType
-            });
-          } catch (e) {}
+          trackAnalyticsEvent('custom_order_sent', {
+            item_name: itemName,
+            contact_type: contactType
+          });
 
           if (tg && tg.showAlert) {
             tg.showAlert('✅ Заявка на индивидуальный заказ отправлена! Мастер свяжется с вами для обсуждения деталей.', () => {
@@ -1601,14 +1611,11 @@
       currentModalProduct = p;
       selectedColorIndex = defaultColorIdx;
 
-      // Аналитика: просмотр товара
-      try {
-        trackEvent('view_product', {
-          product_id: String(p.id),
-          product_name: p.name,
-          price: p.price
-        });
-      } catch (e) {}
+      trackAnalyticsEvent('view_product', {
+        product_id: String(p.id),
+        product_name: p.name,
+        price: p.price
+      });
 
       document.getElementById('detail-title').textContent = p.name;
       document.getElementById('detail-price').textContent = formatPrice(p.price);
@@ -1642,6 +1649,12 @@
       };
 
       document.getElementById('product-detail-modal').classList.add('active');
+    }
+
+    function onModalOverlayClick(e) {
+      if (e.target.id === 'product-detail-modal') {
+        closeProductModal();
+      }
     }
 
     function selectModalColor(idx) {
@@ -1724,14 +1737,11 @@
         });
       }
 
-      // Аналитика: добавление в корзину
-      try {
-        trackEvent('add_to_cart', {
-          product_name: currentModalProduct.name,
-          color: colorName,
-          has_engraving: hasEngraving ? 'yes' : 'no'
-        });
-      } catch (e) {}
+      trackAnalyticsEvent('add_to_cart', {
+        product_name: currentModalProduct.name,
+        color: colorName,
+        has_engraving: hasEngraving ? 'yes' : 'no'
+      });
 
       updateCartUI();
       closeProductModal();
@@ -1862,18 +1872,17 @@
         const response = await fetch(ORDER_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ text: messageText })
+          body: JSON.stringify({
+            text: messageText
+          })
         });
 
         if (response.ok) {
-          // Аналитика: успешный заказ
-          try {
-            trackEvent('order_success', {
-              total_rub: itemsTotalRub,
-              items_count: cart.length,
-              currency: currentCurrency
-            });
-          } catch (e) {}
+          trackAnalyticsEvent('order_success', {
+            total_rub: itemsTotalRub,
+            items_count: cart.length,
+            currency: currentCurrency
+          });
 
           if (tg && tg.showAlert) {
             tg.showAlert('✅ Заказ успешно оформлен! Мастер свяжется с вами для уточнения деталей.', () => {
@@ -1898,7 +1907,6 @@
       }
     }
 
-    // Привязка слушателей
     document.addEventListener('DOMContentLoaded', async () => {
       if (tg) {
         try {
@@ -1907,16 +1915,14 @@
         } catch (e) {}
       }
 
-      // Событие старта сессии для Aptabase
-      try {
-        const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-        trackEvent('app_open', {
-          user_id: user ? String(user.id) : 'unknown',
-          username: user && user.username ? user.username : 'anonymous'
-        });
-      } catch (e) {}
+      // Отправка входа пользователя
+      const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+      trackAnalyticsEvent('app_open', {
+        user_id: user ? String(user.id) : 'unknown',
+        username: user && user.username ? user.username : 'anonymous'
+      });
 
-      // Кнопки шапки и модалок
+      // Слушатели событий
       document.getElementById('currency-select').onchange = (e) => changeCurrency(e.target.value);
       document.getElementById('header-custom-order-btn').onclick = openCustomOrderModal;
       document.getElementById('header-about-btn').onclick = openAboutModal;
@@ -1933,9 +1939,7 @@
       document.getElementById('custom-contact-type').onchange = onCustomContactTypeChange;
       document.getElementById('item-engraving-check').onchange = toggleItemEngraving;
 
-      document.getElementById('product-detail-modal').onclick = (e) => {
-        if (e.target.id === 'product-detail-modal') closeProductModal();
-      };
+      document.getElementById('product-detail-modal').onclick = onModalOverlayClick;
 
       document.querySelectorAll('.category-btn').forEach(btn => {
         btn.onclick = () => filterCategory(btn.dataset.category, btn);
