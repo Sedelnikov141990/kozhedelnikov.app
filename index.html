@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Kozhedelnikov | Мастерская кожаных изделий</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  
-  <!-- Подключение Aptabase Web SDK -->
-  <script src="https://unpkg.com/@aptabase/web@latest/dist/index.global.js"></script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
@@ -897,26 +893,46 @@
     const ENGRAVING_PRICE_RUB = 500;
     // =============================================
 
-    // Инициализация Aptabase
-    let analyticsEnabled = false;
-    if (window.aptabase && APTABASE_APP_KEY) {
-      try {
-        window.aptabase.init(APTABASE_APP_KEY);
-        analyticsEnabled = true;
-      } catch (e) {
-        console.warn('Aptabase init error:', e);
-      }
+    // ================= НАДЕЖНЫЙ ВСТРОЕННЫЙ ТРЕКЕР APTABASE =================
+    let aptabaseSessionId = sessionStorage.getItem('aptabase_session_id');
+    if (!aptabaseSessionId) {
+      aptabaseSessionId = Math.floor(Date.now() / 1000) + '' + Math.floor(Math.random() * 90000000 + 10000000);
+      sessionStorage.setItem('aptabase_session_id', aptabaseSessionId);
     }
 
-    // Безопасная отправка событий аналитики
-    function trackAnalyticsEvent(name, props = {}) {
-      if (analyticsEnabled && window.aptabase) {
-        try {
-          window.aptabase.trackEvent(name, props);
-        } catch (e) {
-          console.warn('Analytics event failed:', e);
-        }
-      }
+    function trackAnalyticsEvent(eventName, props = {}) {
+      if (!APTABASE_APP_KEY || APTABASE_APP_KEY.startsWith("ВАШ_")) return;
+
+      const host = APTABASE_APP_KEY.includes('-EU-') ? 'https://eu.aptabase.com' : 'https://us.aptabase.com';
+      const url = `${host}/api/v0/event`;
+
+      const payload = {
+        timestamp: new Date().toISOString(),
+        sessionId: aptabaseSessionId,
+        eventName: eventName,
+        systemProps: {
+          locale: navigator.language || 'ru-RU',
+          appVersion: '1.0.0',
+          sdkVersion: 'aptabase-web@custom',
+          osName: tg && tg.platform ? tg.platform : 'web'
+        },
+        props: props
+      };
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'App-Key': APTABASE_APP_KEY
+        },
+        credentials: 'omit',
+        body: JSON.stringify(payload)
+      }).then(res => {
+        if (res.ok) console.log(`[Aptabase] Событие отправлено: ${eventName}`);
+        else console.warn(`[Aptabase] Ошибка статуса: ${res.status}`);
+      }).catch(err => {
+        console.warn('[Aptabase] Ошибка сети:', err);
+      });
     }
 
     let currentCurrency = 'USD';
@@ -1907,6 +1923,7 @@
       }
     }
 
+    // Привязка слушателей
     document.addEventListener('DOMContentLoaded', async () => {
       if (tg) {
         try {
@@ -1915,7 +1932,7 @@
         } catch (e) {}
       }
 
-      // Отправка входа пользователя
+      // Отправка входа пользователя в Aptabase
       const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
       trackAnalyticsEvent('app_open', {
         user_id: user ? String(user.id) : 'unknown',
