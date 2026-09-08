@@ -132,14 +132,13 @@
       color: var(--accent-hover);
     }
 
-    /* Блок категорий теперь виден полностью без ухода за экран */
     .categories-wrapper {
       display: flex;
       gap: 8px;
       overflow-x: auto;
       scrollbar-width: none;
-      padding: 4px 16px;
-      margin: 0 -16px;
+      padding: 4px 0;
+      -webkit-overflow-scrolling: touch;
     }
 
     .categories-wrapper::-webkit-scrollbar {
@@ -172,7 +171,6 @@
       width: 100%;
     }
 
-    /* Адаптивная сетка товаров */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -492,6 +490,15 @@
       color: #12100e;
     }
 
+    /* Галерея со стрелками */
+    .gallery-container {
+      position: relative;
+      width: 100%;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
     .gallery-wrapper {
       display: flex;
       gap: 10px;
@@ -499,8 +506,7 @@
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      border-radius: var(--radius);
-      margin-bottom: 8px;
+      scroll-behavior: smooth;
     }
 
     .gallery-wrapper::-webkit-scrollbar {
@@ -515,6 +521,44 @@
       scroll-snap-align: start;
       border-radius: var(--radius);
       background-color: #26201b;
+    }
+
+    .gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(18, 16, 14, 0.75);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .gallery-arrow:hover {
+      background: var(--accent-color);
+      color: #12100e;
+    }
+
+    .gallery-arrow:active {
+      transform: translateY(-50%) scale(0.92);
+    }
+
+    .gallery-arrow.prev-arrow {
+      left: 10px;
+    }
+
+    .gallery-arrow.next-arrow {
+      right: 10px;
     }
 
     .gallery-dots {
@@ -862,7 +906,7 @@
 
       <a href="https://wa.me/5548988607905" class="contact-link">
         <span id="t-about-wa-link">Сообщение в WhatsApp</span>
-        <span style="color: var(--accent-color);">@Kozjedelnikov ➔</span>
+        <span style="color: var(--accent-color);">@Kozhedelnikov ➔</span>
       </a>
 
       <button class="checkout-btn" id="about-return-btn" style="margin-top: 14px;">
@@ -871,7 +915,7 @@
     </div>
   </div>
 
-  <!-- Modal: Product Detailed View -->
+  <!-- Modal: Product Detailed View (со стрелками) -->
   <div class="modal-overlay" id="product-detail-modal">
     <button class="floating-close-btn" id="close-product-btn">&times;</button>
 
@@ -880,7 +924,11 @@
         <div class="modal-title" id="detail-title">Изделие</div>
       </div>
 
-      <div class="gallery-wrapper" id="detail-gallery"></div>
+      <div class="gallery-container">
+        <button type="button" class="gallery-arrow prev-arrow" id="gallery-prev-btn" aria-label="Назад">&#10094;</button>
+        <div class="gallery-wrapper" id="detail-gallery"></div>
+        <button type="button" class="gallery-arrow next-arrow" id="gallery-next-btn" aria-label="Вперед">&#10095;</button>
+      </div>
       <div class="gallery-dots" id="gallery-dots"></div>
 
       <div style="padding: 10px 0;">
@@ -955,6 +1003,18 @@
       </div>
 
       <button class="checkout-btn" id="submit-btn">Оформить заказ</button>
+    </div>
+  </div>
+
+  <!-- Modal: Стильное оповещение об успешном заказе (для браузеров и Mini App) -->
+  <div class="modal-overlay" id="success-modal">
+    <div class="modal-content" style="text-align: center; padding: 28px 20px;">
+      <div style="font-size: 52px; margin-bottom: 12px; line-height: 1;">✅</div>
+      <div class="modal-title" id="t-success-title" style="font-size: 20px; margin-bottom: 10px; color: var(--accent-color);">Заказ успешно оформлен!</div>
+      <p id="t-success-desc" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
+        Спасибо за заказ! Мастер свяжется с вами в ближайшее время для согласования отправки и оплаты.
+      </p>
+      <button class="checkout-btn" id="success-modal-btn">Отлично</button>
     </div>
   </div>
 
@@ -1037,9 +1097,12 @@
         alertPhone: 'Пожалуйста, укажите ваш номер телефона.',
         alertAddress: 'Пожалуйста, укажите город и адрес доставки.',
         alertCep: 'Пожалуйста, укажите корректный CEP.',
+        alertOrderSuccessTitle: 'Заказ успешно оформлен!',
+        alertCustomSuccessTitle: 'Заявка отправлена!',
         alertOrderSuccess: '✅ Заказ успешно оформлен! Мастер свяжется с вами для согласования отправки и оплаты.',
         alertCustomSuccess: '✅ Заявка на индивидуальный заказ отправлена! Мастер свяжется с вами для обсуждения деталей.',
         alertOrderError: 'Ошибка при отправке заказа.',
+        successModalBtn: 'Отлично',
         deliveryOptions: [
           { val: 'Авиадоставка в РФ', text: '✈️ Авиадоставка в РФ' },
           { val: 'СДЭК по РФ', text: '📦 СДЭК по РФ' },
@@ -1111,9 +1174,12 @@
         alertPhone: 'Please provide your contact phone number.',
         alertAddress: 'Please provide your full shipping address.',
         alertCep: 'Please provide your ZIP/Postal code.',
+        alertOrderSuccessTitle: 'Order Placed Successfully!',
+        alertCustomSuccessTitle: 'Request Submitted!',
         alertOrderSuccess: '✅ Order placed successfully! The artisan will contact you shortly to confirm payment & shipping details.',
         alertCustomSuccess: '✅ Bespoke request sent! The artisan will contact you to discuss details.',
         alertOrderError: 'Error sending order. Please try again.',
+        successModalBtn: 'Great',
         deliveryOptions: [
           { val: 'Standard Worldwide Tracked (Free)', text: '📦 Standard Worldwide Tracked — FREE (12–20 days)' },
           { val: 'Express Priority Courier', text: '⚡ Express Delivery (5–9 business days)' }
@@ -1183,9 +1249,12 @@
         alertPhone: 'Por favor, informe seu número de telefone.',
         alertAddress: 'Por favor, informe seu endereço completo de entrega.',
         alertCep: 'Por favor, informe o seu CEP para cálculo do envio.',
+        alertOrderSuccessTitle: 'Pedido Realizado com Sucesso!',
+        alertCustomSuccessTitle: 'Solicitação Enviada!',
         alertOrderSuccess: '✅ Pedido realizado com sucesso! O artesão entrará em contato via WhatsApp/Telegram para envio dos dados de pagamento e confirmação.',
         alertCustomSuccess: '✅ Solicitação enviada! Entraremos em contato em breve para alinhar os detalhes.',
         alertOrderError: 'Erro ao enviar pedido. Tente novamente.',
+        successModalBtn: 'Entendido',
         deliveryOptions: [
           { val: 'Frete Padrao Rastreado (Gratis)', text: '📦 Frete Padrão com Rastreio — GRÁTIS (PAC / Transportadora)' },
           { val: 'Entrega Expressa (SEDEX / Uber)', text: '⚡ Entrega Expressa (SEDEX / Uber Flash)' }
@@ -1206,6 +1275,8 @@
       USD: 0.011,
       BRL: 0.058
     };
+
+    let successModalCallback = null;
 
     function getColorHex(colorName) {
       const lower = colorName.toLowerCase();
@@ -1755,6 +1826,43 @@
       return val[currentCountry] || val['RU'] || val['US'] || '';
     }
 
+    // Универсальная система оповещений (работает и в браузере, и в Telegram Mini App)
+    function notifySuccess(title, message, callback) {
+      const isTgApp = Boolean(tg && tg.initData && tg.initData.length > 0);
+      if (isTgApp && tg.showAlert) {
+        tg.showAlert(message, () => {
+          if (typeof callback === 'function') callback();
+        });
+      } else {
+        openSuccessModal(title, message, callback);
+      }
+    }
+
+    function openSuccessModal(title, message, callback) {
+      const modal = document.getElementById('success-modal');
+      const titleEl = document.getElementById('t-success-title');
+      const descEl = document.getElementById('t-success-desc');
+      const btn = document.getElementById('success-modal-btn');
+      const t = I18N[currentCountry] || I18N.RU;
+
+      if (titleEl) titleEl.textContent = title;
+      if (descEl) descEl.textContent = message;
+      if (btn) btn.textContent = t.successModalBtn;
+
+      successModalCallback = callback;
+      modal.classList.add('active');
+    }
+
+    function closeSuccessModal() {
+      const modal = document.getElementById('success-modal');
+      modal.classList.remove('active');
+      if (typeof successModalCallback === 'function') {
+        const cb = successModalCallback;
+        successModalCallback = null;
+        cb();
+      }
+    }
+
     function setLanguage(countryCode) {
       currentCountry = countryCode;
       const t = I18N[countryCode] || I18N.RU;
@@ -1991,13 +2099,13 @@
       const hasConsent = document.getElementById('custom-consent-check').checked;
 
       if (!hasConsent) {
-        if (tg && tg.showAlert) tg.showAlert(t.alertConsent);
+        if (tg && tg.initData && tg.showAlert) tg.showAlert(t.alertConsent);
         else alert(t.alertConsent);
         return;
       }
 
       if (!itemName || !itemDesc || !contactValue) {
-        if (tg && tg.showAlert) tg.showAlert(t.alertCustomFields);
+        if (tg && tg.initData && tg.showAlert) tg.showAlert(t.alertCustomFields);
         else alert(t.alertCustomFields);
         return;
       }
@@ -2034,14 +2142,10 @@
             country: currentCountry
           });
 
-          if (tg && tg.showAlert) {
-            tg.showAlert(t.alertCustomSuccess, () => {
-              closeCustomOrderModal();
-            });
-          } else {
-            alert(t.alertCustomSuccess);
+          notifySuccess(t.alertCustomSuccessTitle, t.alertCustomSuccess, () => {
             closeCustomOrderModal();
-          }
+          });
+
           document.getElementById('custom-item-name').value = '';
           document.getElementById('custom-item-color').value = '';
           document.getElementById('custom-item-desc').value = '';
@@ -2051,7 +2155,7 @@
         }
       } catch (err) {
         console.error(err);
-        if (tg && tg.showAlert) tg.showAlert(t.alertOrderError);
+        if (tg && tg.initData && tg.showAlert) tg.showAlert(t.alertOrderError);
         else alert(t.alertOrderError);
       } finally {
         btn.disabled = false;
@@ -2135,6 +2239,8 @@
 
       const gallery = document.getElementById('detail-gallery');
       const dotsContainer = document.getElementById('gallery-dots');
+      const prevBtn = document.getElementById('gallery-prev-btn');
+      const nextBtn = document.getElementById('gallery-next-btn');
 
       gallery.innerHTML = imgs.map((src, idx) => `
         <img src="${src}" alt="${getTxt(currentModalProduct.name)} - ${getTxt(selectedVariant.color)} ${idx + 1}" loading="lazy">
@@ -2142,9 +2248,16 @@
 
       gallery.scrollLeft = 0;
 
-      dotsContainer.innerHTML = imgs.length > 1 
-        ? imgs.map((_, idx) => `<div class="dot ${idx === 0 ? 'active' : ''}"></div>`).join('') 
-        : '';
+      // Скрываем стрелки и точки, если фото всего одно
+      if (imgs.length > 1) {
+        prevBtn.style.display = 'flex';
+        nextBtn.style.display = 'flex';
+        dotsContainer.innerHTML = imgs.map((_, idx) => `<div class="dot ${idx === 0 ? 'active' : ''}"></div>`).join('');
+      } else {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        dotsContainer.innerHTML = '';
+      }
 
       gallery.onscroll = () => {
         const scrollIndex = Math.round(gallery.scrollLeft / gallery.clientWidth);
@@ -2279,21 +2392,21 @@
 
       const hasConsent = document.getElementById('cart-consent-check').checked;
       if (!hasConsent) {
-        if (tg && tg.showAlert) tg.showAlert(t.alertConsent);
+        if (tg && tg.initData && tg.showAlert) tg.showAlert(t.alertConsent);
         else alert(t.alertConsent);
         return;
       }
 
       const phone = document.getElementById('customer-phone').value.trim();
       if (!phone) {
-        if (tg && tg.showAlert) tg.showAlert(t.alertPhone);
+        if (tg && tg.initData && tg.showAlert) tg.showAlert(t.alertPhone);
         else alert(t.alertPhone);
         return;
       }
 
       const comment = document.getElementById('customer-comment').value.trim();
       if (!comment) {
-        if (tg && tg.showAlert) tg.showAlert(t.alertAddress);
+        if (tg && tg.initData && tg.showAlert) tg.showAlert(t.alertAddress);
         else alert(t.alertAddress);
         return;
       }
@@ -2302,7 +2415,7 @@
       if (currentCountry === 'BR') {
         cep = document.getElementById('customer-cep').value.trim();
         if (!cep) {
-          if (tg && tg.showAlert) tg.showAlert(t.alertCep);
+          if (tg && tg.initData && tg.showAlert) tg.showAlert(t.alertCep);
           else alert(t.alertCep);
           return;
         }
@@ -2364,22 +2477,22 @@
             payment: payment
           });
 
-          if (tg && tg.showAlert) {
-            tg.showAlert(t.alertOrderSuccess, () => {
-              tg.close();
-            });
-          } else {
-            alert(t.alertOrderSuccess);
+          const isTgApp = Boolean(tg && tg.initData && tg.initData.length > 0);
+
+          notifySuccess(t.alertOrderSuccessTitle, t.alertOrderSuccess, () => {
             cart = [];
             updateCartUI();
             closeCartModal();
-          }
+            if (isTgApp && tg.close) {
+              tg.close();
+            }
+          });
         } else {
           throw new Error('Server error');
         }
       } catch (err) {
         console.error(err);
-        if (tg && tg.showAlert) tg.showAlert(t.alertOrderError);
+        if (tg && tg.initData && tg.showAlert) tg.showAlert(t.alertOrderError);
         else alert(t.alertOrderError);
       } finally {
         btn.disabled = false;
@@ -2447,6 +2560,20 @@
       document.getElementById('about-return-btn').onclick = closeAboutModal;
       document.getElementById('close-product-btn').onclick = closeProductModal;
       document.getElementById('close-cart-btn').onclick = closeCartModal;
+      document.getElementById('success-modal-btn').onclick = closeSuccessModal;
+
+      // Стрелки листания фотографий в карточке товара
+      document.getElementById('gallery-prev-btn').onclick = (e) => {
+        e.stopPropagation();
+        const gallery = document.getElementById('detail-gallery');
+        gallery.scrollBy({ left: -gallery.clientWidth, behavior: 'smooth' });
+      };
+
+      document.getElementById('gallery-next-btn').onclick = (e) => {
+        e.stopPropagation();
+        const gallery = document.getElementById('detail-gallery');
+        gallery.scrollBy({ left: gallery.clientWidth, behavior: 'smooth' });
+      };
 
       document.getElementById('cart-bar').onclick = openCartModal;
       document.getElementById('submit-btn').onclick = submitOrder;
@@ -2455,6 +2582,9 @@
       document.getElementById('item-engraving-check').onchange = toggleItemEngraving;
 
       document.getElementById('product-detail-modal').onclick = onModalOverlayClick;
+      document.getElementById('success-modal').onclick = (e) => {
+        if (e.target.id === 'success-modal') closeSuccessModal();
+      };
 
       document.querySelectorAll('.category-btn').forEach(btn => {
         btn.onclick = () => filterCategory(btn.dataset.category, btn);
