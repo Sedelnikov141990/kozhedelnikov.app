@@ -49,19 +49,8 @@
       color: var(--text-main);
       padding-bottom: 90px;
       line-height: 1.4;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* Адаптивный каркас для больших экранов */
-    .app-wrapper {
       width: 100%;
-      max-width: 1000px;
       min-height: 100vh;
-      background-color: var(--bg-color);
-      box-shadow: 0 0 40px rgba(0,0,0,0.5);
-      position: relative;
     }
 
     header {
@@ -71,6 +60,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      width: 100%;
     }
 
     .brand-title {
@@ -142,13 +132,14 @@
       color: var(--accent-hover);
     }
 
+    /* Блок категорий теперь виден полностью без ухода за экран */
     .categories-wrapper {
       display: flex;
-      justify-content: center;
       gap: 8px;
       overflow-x: auto;
       scrollbar-width: none;
-      padding: 4px 0;
+      padding: 4px 16px;
+      margin: 0 -16px;
     }
 
     .categories-wrapper::-webkit-scrollbar {
@@ -166,6 +157,7 @@
       white-space: nowrap;
       cursor: pointer;
       transition: all 0.2s ease;
+      flex-shrink: 0;
     }
 
     .category-btn.active {
@@ -177,23 +169,31 @@
 
     .container {
       padding: 16px;
+      width: 100%;
     }
 
-    /* Адаптивная сетка товаров под разные устройства */
+    /* Адаптивная сетка товаров */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 14px;
     }
 
-    @media (min-width: 600px) {
+    @media (min-width: 768px) {
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
       .products-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 16px;
       }
     }
 
-    @media (min-width: 900px) {
+    @media (min-width: 1100px) {
+      .container {
+        max-width: 1100px;
+      }
       .products-grid {
         grid-template-columns: repeat(4, 1fr);
         gap: 20px;
@@ -357,10 +357,10 @@
     .cart-bar {
       position: fixed;
       bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      width: calc(100% - 32px);
+      left: 16px;
+      right: 16px;
       max-width: 600px;
+      margin: 0 auto;
       background: var(--accent-color);
       color: #12100e;
       padding: 14px 20px;
@@ -372,12 +372,13 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       cursor: pointer;
       z-index: 200;
+      transform: translateY(100px);
       opacity: 0;
       transition: all 0.3s ease;
     }
 
     .cart-bar.visible {
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0);
       opacity: 1;
     }
 
@@ -412,7 +413,6 @@
       pointer-events: auto;
     }
 
-    /* Адаптивные модальные окна для планшетов и ПК (по центру вместо привязки к низу) */
     .modal-content {
       background: var(--card-bg);
       width: 100%;
@@ -726,57 +726,55 @@
 </head>
 <body>
 
-  <div class="app-wrapper">
-    <header>
-      <div class="brand-title">KOZHEDELNIKOV</div>
-      <div class="brand-subtitle" id="t-brand-sub">Leather Craft & Accessories</div>
+  <header>
+    <div class="brand-title">KOZHEDELNIKOV</div>
+    <div class="brand-subtitle" id="t-brand-sub">Leather Craft & Accessories</div>
 
-      <!-- Top Action Bar -->
-      <div class="top-action-bar">
-        <!-- ISO Alpha-2 Country Selector -->
-        <select class="select-pill" id="language-select">
-          <option value="US">🇺🇸 US</option>
-          <option value="RU">🇷🇺 RU</option>
-          <option value="BR">🇧🇷 BR</option>
-        </select>
+    <!-- Top Action Bar -->
+    <div class="top-action-bar">
+      <!-- ISO Alpha-2 Country Selector -->
+      <select class="select-pill" id="language-select">
+        <option value="US">🇺🇸 US</option>
+        <option value="RU">🇷🇺 RU</option>
+        <option value="BR">🇧🇷 BR</option>
+      </select>
 
-        <!-- Currency Selector -->
-        <select class="select-pill" id="currency-select">
-          <option value="USD">$ (USD)</option>
-          <option value="RUB">₽ (RUB)</option>
-          <option value="BRL">R$ (BRL)</option>
-        </select>
+      <!-- Currency Selector -->
+      <select class="select-pill" id="currency-select">
+        <option value="USD">$ (USD)</option>
+        <option value="RUB">₽ (RUB)</option>
+        <option value="BRL">R$ (BRL)</option>
+      </select>
 
-        <button class="action-btn" id="header-custom-order-btn">
-          <span></span> <span id="t-btn-custom">Эксклюзив</span>
-        </button>
+      <button class="action-btn" id="header-custom-order-btn">
+        <span></span> <span id="t-btn-custom">Эксклюзив</span>
+      </button>
 
-        <button class="action-btn" id="header-about-btn">
-          <span></span> <span id="t-btn-about">О нас</span>
-        </button>
-      </div>
-
-      <div class="categories-wrapper">
-        <button class="category-btn active" data-category="all" id="t-cat-all">Все товары</button>
-        <button class="category-btn" data-category="wallets" id="t-cat-wallets">Кошельки</button>
-        <button class="category-btn" data-category="bags" id="t-cat-bags">Сумки</button>
-        <button class="category-btn" data-category="accessories" id="t-cat-accessories">Аксессуары</button>
-        <button class="category-btn" data-category="adult" id="t-cat-adult">18+</button>
-      </div>
-    </header>
-
-    <div class="container">
-      <div class="products-grid" id="products-grid"></div>
+      <button class="action-btn" id="header-about-btn">
+        <span></span> <span id="t-btn-about">О нас</span>
+      </button>
     </div>
 
-    <!-- Floating Cart Bar -->
-    <div class="cart-bar" id="cart-bar">
-      <div>
-        <span id="t-cart-label">Корзина</span>
-        <span class="cart-count-badge" id="cart-count">0</span>
-      </div>
-      <div id="cart-total">0 ₽</div>
+    <div class="categories-wrapper">
+      <button class="category-btn active" data-category="all" id="t-cat-all">Все товары</button>
+      <button class="category-btn" data-category="wallets" id="t-cat-wallets">Кошельки</button>
+      <button class="category-btn" data-category="bags" id="t-cat-bags">Сумки</button>
+      <button class="category-btn" data-category="accessories" id="t-cat-accessories">Аксессуары</button>
+      <button class="category-btn" data-category="adult" id="t-cat-adult">18+</button>
     </div>
+  </header>
+
+  <div class="container">
+    <div class="products-grid" id="products-grid"></div>
+  </div>
+
+  <!-- Floating Cart Bar -->
+  <div class="cart-bar" id="cart-bar">
+    <div>
+      <span id="t-cart-label">Корзина</span>
+      <span class="cart-count-badge" id="cart-count">0</span>
+    </div>
+    <div id="cart-total">0 ₽</div>
   </div>
 
   <!-- Modal: Custom Order -->
@@ -864,7 +862,7 @@
 
       <a href="https://wa.me/5548988607905" class="contact-link">
         <span id="t-about-wa-link">Сообщение в WhatsApp</span>
-        <span style="color: var(--accent-color);">@Kozhedelnikov ➔</span>
+        <span style="color: var(--accent-color);">@Kozjedelnikov ➔</span>
       </a>
 
       <button class="checkout-btn" id="about-return-btn" style="margin-top: 14px;">
@@ -2397,7 +2395,7 @@
         } catch (e) {}
       }
 
-      // Автоматическое определение языка/страны (Бразилия, Россия или весь остальной мир -> США/Английский)
+      // Автоматическое определение языка/страны
       const userLang = (tg?.initDataUnsafe?.user?.language_code || navigator.language || '').toLowerCase();
       if (userLang.startsWith('pt')) {
         currentCountry = 'BR';
