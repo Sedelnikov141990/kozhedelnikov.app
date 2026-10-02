@@ -11,18 +11,24 @@
   <link rel="preload" as="image" href="./images/Wallet/Cartholder/Black/cartholderM2.webp">
   <link rel="preload" as="image" href="./images/bagmen/bodykos/kos1.webp">
 
-  <!-- Aptabase SDK -->
   <script type="module">
     import { init, trackEvent } from 'https://esm.sh/@aptabase/web@0.1.1';
     
-    init('A-US-0220832996', { appVersion: '1.0.0' });
-    window.trackAptabaseEvent = trackEvent;
+    try {
+      init('A-US-0220832996', { appVersion: '1.0.0' });
+      window.trackAptabaseEvent = trackEvent;
 
-    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    trackEvent('app_open', {
-      user_id: tgUser ? String(tgUser.id) : 'unknown',
-      username: tgUser && tgUser.username ? tgUser.username : 'anonymous'
-    });
+      // Ждем инициализации Telegram WebApp с небольшой задержкой
+      setTimeout(() => {
+        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        trackEvent('app_open', {
+          user_id: tgUser ? String(tgUser.id) : 'unknown',
+          username: tgUser && tgUser.username ? tgUser.username : 'anonymous'
+        });
+      }, 500);
+    } catch (err) {
+      console.error('Aptabase error:', err);
+    }
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
