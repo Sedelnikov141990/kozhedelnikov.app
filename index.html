@@ -6,10 +6,12 @@
   <title>Kozhedelnikov | Leather Craft</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+  <!-- Предзагрузка главных картинок для мгновенного появления -->
   <link rel="preload" as="image" href="./images/oblozhkaV1/img1.webp">
   <link rel="preload" as="image" href="./images/Wallet/Cartholder/Black/cartholderM2.webp">
   <link rel="preload" as="image" href="./images/bagmen/bodykos/kos1.webp">
 
+  <!-- Aptabase SDK -->
   <script type="module">
     import { init, trackEvent } from 'https://esm.sh/@aptabase/web@0.1.1';
     
@@ -57,6 +59,7 @@
       min-height: 100vh;
     }
 
+    /* Экран загрузки */
     #app-loader {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background-color: var(--bg-color); display: flex; flex-direction: column;
@@ -110,7 +113,13 @@
     .color-dot { width: 15px; height: 15px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.25); cursor: pointer; opacity: 0.75; }
     .color-dot.active { transform: scale(1.25); opacity: 1; border-color: rgba(255, 255, 255, 0.9); }
 
+    .modal-swatches { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+    .modal-color-item { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 20px; cursor: pointer; font-size: 12px; }
+    .modal-color-item.active { border-color: var(--accent-color); background: rgba(212, 163, 115, 0.1); color: var(--accent-color); font-weight: 600; }
+    .modal-color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.3); }
+
     .add-btn { background: transparent; border: 1px solid var(--accent-color); color: var(--accent-color); padding: 8px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; }
+    .add-btn:hover { background: rgba(212, 163, 115, 0.1); }
 
     .cart-bar {
       position: fixed; bottom: 16px; left: 16px; right: 16px; max-width: 600px; margin: 0 auto;
@@ -126,20 +135,52 @@
       backdrop-filter: blur(4px); z-index: 300; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal-content { background: var(--card-bg); width: 100%; max-width: 600px; max-height: 85vh; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 20px; overflow-y: auto; border: 1px solid var(--border-color); transform: translateY(100%); transition: transform 0.3s ease; }
+    .modal-content { background: var(--card-bg); width: 100%; max-width: 600px; max-height: 85vh; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 20px; overflow-y: auto; border: 1px solid var(--border-color); transform: translateY(100%); transition: transform 0.3s ease; position: relative; }
     .modal-overlay.active .modal-content { transform: translateY(0); }
 
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
     .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--accent-color); }
     .close-btn { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
+    .floating-close-btn { position: fixed; top: 16px; right: 16px; width: 38px; height: 38px; border-radius: 50%; background: rgba(28, 24, 21, 0.85); border: 1px solid var(--border-color); color: var(--text-main); font-size: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 350; }
+
+    .gallery-container { position: relative; width: 100%; border-radius: var(--radius); overflow: hidden; margin-bottom: 8px; }
+    .gallery-wrapper { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; }
+    .gallery-wrapper::-webkit-scrollbar { display: none; }
+    .gallery-wrapper img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; flex-shrink: 0; scroll-snap-align: start; border-radius: var(--radius); background-color: #26201b; }
+    .gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%; background: rgba(18, 16, 14, 0.45); color: #fefae0; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; }
+    .gallery-arrow.prev-arrow { left: 10px; }
+    .gallery-arrow.next-arrow { right: 10px; }
+    .gallery-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 12px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-color); }
+    .dot.active { background: var(--accent-color); width: 16px; border-radius: 10px; }
+
+    .cart-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+    .cart-item-img { width: 54px; height: 54px; border-radius: 8px; object-fit: cover; }
+    .cart-item-details { flex-grow: 1; }
+    .cart-item-title { font-size: 13px; font-weight: 600; }
+    .cart-item-options { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .cart-item-price { font-size: 13px; font-weight: 700; color: var(--accent-color); margin-top: 4px; }
+    .qty-controls { display: flex; align-items: center; gap: 8px; background: var(--bg-color); padding: 4px 8px; border-radius: 8px; }
+    .qty-btn { background: none; border: none; color: var(--text-main); font-size: 16px; font-weight: bold; cursor: pointer; width: 20px; text-align: center; }
 
     .form-group { margin-top: 14px; }
     .form-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: block; }
     .form-input, .form-select, .form-textarea { width: 100%; padding: 10px 12px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 13px; outline: none; font-family: inherit; }
-    
-    .checkout-btn { background: var(--accent-color); color: #12100e; width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; margin-top: 20px; cursor: pointer; }
+    .form-textarea { resize: vertical; min-height: 80px; }
 
-    /* Маркетинговый блок помощи в корзине */
+    .checkbox-group { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12px; color: var(--text-main); }
+    .consent-group { display: flex; align-items: flex-start; gap: 8px; margin-top: 12px; font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+    .consent-group input[type="checkbox"] { margin-top: 2px; accent-color: var(--accent-color); width: 14px; height: 14px; flex-shrink: 0; }
+
+    .checkout-btn { background: var(--accent-color); color: #12100e; width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px; margin-top: 20px; cursor: pointer; }
+    .empty-cart-msg { text-align: center; padding: 30px 0; color: var(--text-muted); font-size: 14px; }
+
+    .about-card { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+    .about-card h4 { font-size: 14px; color: var(--accent-color); margin-bottom: 6px; }
+    .about-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    .contact-link { display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main); text-decoration: none; padding: 12px 14px; border-radius: 12px; margin-bottom: 8px; font-size: 13px; font-weight: 500; }
+
     .cart-help-banner {
       background: rgba(212, 163, 115, 0.08); border: 1px dashed var(--accent-color);
       border-radius: 12px; padding: 12px; margin-bottom: 14px; text-align: center;
@@ -201,7 +242,133 @@
     <div id="cart-total">0 ₽</div>
   </div>
 
-  <!-- Modal: Cart & Delivery & Payment -->
+  <!-- Modal: Custom Order -->
+  <div class="modal-overlay" id="custom-order-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="t-custom-modal-title">Индивидуальный заказ</div>
+        <button class="close-btn" id="close-custom-order-btn">&times;</button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px;" id="t-custom-modal-sub">
+        Изготовим изделие по вашим размерам, эскизам или пожеланиям.
+      </p>
+
+      <div class="form-group">
+        <label class="form-label" id="t-custom-lbl-item">Тип изделия / Что хотите заказать:*</label>
+        <input type="text" class="form-input" id="custom-item-name" placeholder="Например: Портфель для ноутбука">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="t-custom-lbl-color">Желаемый цвет кожи и нити:</label>
+        <input type="text" class="form-input" id="custom-item-color" placeholder="Например: Коричневая кожа, бежевая нить">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="t-custom-lbl-desc">Описание, размеры и детали заказа:*</label>
+        <textarea class="form-textarea" id="custom-item-desc" placeholder="Укажите размеры, карманы или гравировку..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="t-custom-lbl-method">Удобный способ связи:</label>
+        <select class="form-select" id="custom-contact-type">
+          <option value="Telegram">Telegram</option>
+          <option value="WhatsApp">WhatsApp</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="custom-contact-label">Ваш ник в Telegram:*</label>
+        <input type="text" class="form-input" id="custom-contact-value" placeholder="@username">
+      </div>
+
+      <div class="consent-group">
+        <input type="checkbox" id="custom-consent-check" checked>
+        <label for="custom-consent-check" id="t-custom-lbl-consent">Я согласен(на) на обработку персональных данных</label>
+      </div>
+
+      <button class="checkout-btn" id="custom-submit-btn">Отправить заявку мастеру</button>
+    </div>
+  </div>
+
+  <!-- Modal: About Workshop -->
+  <div class="modal-overlay" id="about-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="t-about-modal-title">О мастерской Kozhedelnikov</div>
+        <button class="close-btn" id="close-about-btn">&times;</button>
+      </div>
+
+      <div class="about-card">
+        <h4 id="t-about-h1">🔨 100% Ручная работа</h4>
+        <p id="t-about-p1">Каждое изделие кроится, обрабатывается и сшивается вручную классическим седельным швом.</p>
+      </div>
+
+      <div class="about-card">
+        <h4 id="t-about-h2">🌿 Премиальная кожа</h4>
+        <p id="t-about-p2">Натуральная кожа растительного и комбинированного дубления.</p>
+      </div>
+
+      <div class="about-card">
+        <h4 id="t-about-h3">🛡️ 10 Лет гарантии</h4>
+        <p id="t-about-p3">Честная гарантия на швы и фурнитуру 10 лет.</p>
+      </div>
+
+      <div style="margin: 18px 0 8px; font-size: 13px; font-weight: 600; color: var(--accent-color);" id="t-about-contact-head">Связаться с мастером:</div>
+      <a href="https://t.me/kozjedelnikov" target="_blank" class="contact-link">
+        <span id="t-about-tg-link">Сообщение в Telegram</span>
+        <span style="color: var(--accent-color);">@Kozjedelnikov ➔</span>
+      </a>
+      <a href="https://wa.me/5548988607905" class="contact-link">
+        <span id="t-about-wa-link">Сообщение в WhatsApp</span>
+        <span style="color: var(--accent-color);">➔</span>
+      </a>
+
+      <button class="checkout-btn" id="about-return-btn" style="margin-top: 14px;">Вернуться к покупкам</button>
+    </div>
+  </div>
+
+  <!-- Modal: Product Detailed View -->
+  <div class="modal-overlay" id="product-detail-modal">
+    <button class="floating-close-btn" id="close-product-btn">&times;</button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="detail-title">Изделие</div>
+      </div>
+      <div class="gallery-container">
+        <button type="button" class="gallery-arrow prev-arrow" id="gallery-prev-btn">&#10094;</button>
+        <div class="gallery-wrapper" id="detail-gallery"></div>
+        <button type="button" class="gallery-arrow next-arrow" id="gallery-next-btn">&#10095;</button>
+      </div>
+      <div class="gallery-dots" id="gallery-dots"></div>
+
+      <div style="padding: 10px 0;">
+        <div class="product-price" id="detail-price" style="font-size: 18px; margin-bottom: 8px;"></div>
+        <p id="detail-desc" style="font-size: 13px; color: var(--text-muted); line-height: 1.5;"></p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><span id="t-modal-color-lbl">Цвет кожи:</span> <span id="modal-selected-color-name" style="color: var(--accent-color); font-weight: 600;"></span></label>
+        <div class="modal-swatches" id="modal-swatches-container"></div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input type="checkbox" id="item-engraving-check">
+          <label for="item-engraving-check" id="item-engraving-label">Персональная гравировка (+900 ₽)</label>
+        </div>
+      </div>
+
+      <div class="form-group" id="item-engraving-group" style="display: none;">
+        <label class="form-label" id="t-modal-engraving-lbl">Текст/инициалы для гравировки:</label>
+        <input type="text" class="form-input" id="item-engraving-text" placeholder="Например: А.С.">
+      </div>
+
+      <button class="checkout-btn" id="detail-add-btn" style="margin-top: 16px;">+ Добавить в корзину</button>
+    </div>
+  </div>
+
+  <!-- Modal: Cart & Checkout -->
   <div class="modal-overlay" id="cart-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -209,10 +376,10 @@
         <button class="close-btn" id="close-cart-btn">&times;</button>
       </div>
 
-      <!-- Маркетинговая подсказка в корзине для борьбы с брошенными заказами -->
+      <!-- Маркетинговый блок с призывом написать мастеру за скидкой -->
       <div class="cart-help-banner">
-        <p id="t-cart-help-text">Возникли вопросы по оформлению, доставке или оплате? Напишите мастеру и получите персональный бонус!</p>
-        <a href="https://t.sch/kozjedelnikov" target="_blank" class="cart-help-btn" id="t-cart-help-btn">💬 Написать мастеру в Telegram</a>
+        <p id="t-cart-help-text">Возникли вопросы по оформлению, доставке или оплате? Напишите мастеру в Telegram и получите персональную скидку!</p>
+        <a href="https://t.me/kozjedelnikov" target="_blank" class="cart-help-btn" id="t-cart-help-btn">💬 Написать в Telegram</a>
       </div>
 
       <div id="cart-items-container"></div>
@@ -246,33 +413,103 @@
     </div>
   </div>
 
+  <!-- Modal: Success -->
+  <div class="modal-overlay" id="success-modal">
+    <div class="modal-content" style="text-align: center; padding: 28px 20px;">
+      <div style="font-size: 52px; margin-bottom: 12px; line-height: 1;">✅</div>
+      <div class="modal-title" id="t-success-title" style="font-size: 20px; margin-bottom: 10px; color: var(--accent-color);">Заказ успешно оформлен!</div>
+      <p id="t-success-desc" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
+        Спасибо за заказ! Мастер свяжется с вами в ближайшее время.
+      </p>
+      <button class="checkout-btn" id="success-modal-btn">Отлично</button>
+    </div>
+  </div>
+
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbw7_bYZwaNw24Vy2vOTiF20VMP3VYc-744kklMwm6uHhhZJ8BoFVOBnXL7ObwhfApqm-g/exec";
+    const ENGRAVING_PRICE_RUB = 900;
+
+    function trackAnalyticsEvent(name, props = {}) {
+      if (typeof window.trackAptabaseEvent === 'function') {
+        try { window.trackAptabaseEvent(name, props); } catch (e) {}
+      }
+    }
 
     const I18N = {
       RU: {
         htmlLang: 'ru-RU', brandSub: 'Авторские изделия ручной работы',
+        btnCustom: 'Эксклюзив', btnAbout: 'О нас',
+        catAll: 'Все товары', catWallets: 'Кошельки', catBags: 'Сумки', catAccessories: 'Аксессуары', catAdult: '18+',
         cartLabel: 'Корзина', chooseBtn: 'Выбрать и заказать', emptyCart: 'Корзина пуста',
-        cartHelpText: 'Возникли вопросы по доставке или оплате? Напишите мастеру и получите скидку!',
+        engravingPlus: 'Персональная гравировка', colorLabel: 'Цвет кожи:',
+        engravingTextLabel: 'Текст/инициалы для гравировки:', engravingPlaceholder: 'Например: А.С.',
+        addToCartBtn: '+ Добавить в корзину',
+        customTitle: 'Индивидуальный заказ', customSub: 'Изготовим изделие по вашим размерам и эскизам.',
+        customItemLabel: 'Тип изделия:*', customItemPlaceholder: 'Например: Портфель',
+        customColorLabel: 'Цвет кожи и нити:', customColorPlaceholder: 'Коричневый, бежевая нить',
+        customDescLabel: 'Описание и размеры:*', customDescPlaceholder: 'Укажите детали...',
+        customMethodLabel: 'Способ связи:', customTgNickLabel: 'Ник в Telegram:*', customWaPhoneLabel: 'Телефон для WhatsApp:*',
+        customConsent: 'Согласен на обработку персональных данных', customSubmit: 'Отправить заявку', customSending: 'Отправка...',
+        aboutTitle: 'О мастерской', aboutH1: '🔨 100% Ручная работа', aboutP1: 'Классический седельный шов вощеной нитью.',
+        aboutH2: '🌿 Премиальная кожа', aboutP2: 'Натуральная кожа растительного дубления.',
+        aboutH3: '🛡️ 10 Лет гарантии', aboutP3: 'Честная гарантия 10 лет.',
+        aboutContactHead: 'Связаться напрямую:', aboutTgLink: 'Telegram', aboutWaLink: 'WhatsApp', aboutReturn: 'Назад к покупкам',
+        cartModalTitle: 'Ваш заказ',
+        cartHelpText: 'Возникли вопросы по доставке или оплате? Напишите мастеру в Telegram и получите скидку!',
         cartHelpBtn: '💬 Написать в Telegram',
+        deliveryLabel: 'Способ доставки:*', paymentLabel: 'Способ оплаты:*',
+        cepLabel: 'Почтовый индекс:', phoneLabel: 'Телефон для связи:*', phonePlaceholder: '+7 (999) 000-00-00',
+        commentLabel: 'Город и адрес доставки (или ПВЗ СДЭК):*', commentPlaceholder: 'Москва, ПВЗ СДЭК',
+        cartConsent: 'Согласен на обработку персональных данных', submitOrderBtn: 'Оформить заказ', submittingOrderBtn: 'Отправка...',
+        alertConsent: 'Необходимо согласиться на обработку данных.', alertCustomFields: 'Заполните обязательные поля.',
+        alertPhone: 'Укажите номер телефона.', alertAddress: 'Укажите адрес доставки.', alertCep: 'Укажите CEP.',
+        alertOrderSuccessTitle: 'Заказ оформлен!', alertCustomSuccessTitle: 'Заявка отправлена!',
+        alertOrderSuccess: '✅ Заказ успешно оформлен! Мастер свяжется с вами.',
+        alertCustomSuccess: '✅ Заявка отправлена!', alertOrderError: 'Ошибка при отправке.', successModalBtn: 'Отлично',
         deliveryOptions: [
           { val: 'Авиадоставка из Бразилии', text: '✈️ Авиадоставка из Бразилии' },
+          { val: 'Прямое отправление из Бразилии', text: '📦 Прямое отправление из Бразилии' },
           { val: 'СДЭК по РФ', text: '📦 СДЭК по РФ' },
-          { val: 'Самовывоз / Курьер (Флорианополис, Бразилия)', text: '📍 Самовывоз (Флорианополис)' }
+          { val: 'Самовывоз / Курьер (Флорианополис)', text: '📍 Самовывоз / Курьер (Флорианополис)' }
         ],
         paymentOptions: [
+          { val: 'Pixton (Pix через TON)', text: '🟢 Pixton (Pix через TON)' },
           { val: 'СБП (Перевод на карту РФ / Озон)', text: '💳 СБП (Карта РФ / Озон банк)' },
-          { val: 'PIX (Для живущих в Бразилии)', text: '🇧🇷 PIX (Мгновенно в реаалах)' },
           { val: 'Bybit UID (USDT 0%)', text: '🪙 Криптоперевод по Bybit UID (USDT 0%)' },
           { val: 'Криптовалюта (USDT TRC-20 / TON)', text: '💎 USDT (TRC-20) / TON' }
         ]
       },
       US: {
         htmlLang: 'en-US', brandSub: 'Handcrafted in Brazil | Worldwide Shipping',
+        btnCustom: 'Exclusive', btnAbout: 'About Us',
+        catAll: 'All Products', catWallets: 'Wallets', catBags: 'Bags', catAccessories: 'Accessories', catAdult: '18+',
         cartLabel: 'Cart', chooseBtn: 'Select & Order', emptyCart: 'Cart is empty',
+        engravingPlus: 'Custom Engraving', colorLabel: 'Leather color:',
+        engravingTextLabel: 'Initials for engraving:', engravingPlaceholder: 'e.g., J.D.',
+        addToCartBtn: '+ Add to Cart',
+        customTitle: 'Custom Bespoke Order', customSub: 'Crafted to your dimensions.',
+        customItemLabel: 'Item type:*', customItemPlaceholder: 'e.g., Briefcase',
+        customColorLabel: 'Leather & thread color:', customColorPlaceholder: 'Cognac leather',
+        customDescLabel: 'Description & dimensions:*', customDescPlaceholder: 'Specify details...',
+        customMethodLabel: 'Contact method:', customTgNickLabel: 'Telegram username:*', customWaPhoneLabel: 'WhatsApp phone:*',
+        customConsent: 'I consent to data processing', customSubmit: 'Send Request', customSending: 'Sending...',
+        aboutTitle: 'About Kozhedelnikov', aboutH1: '🔨 100% Handcrafted', aboutP1: 'Classic saddle stitch.',
+        aboutH2: '🌿 Premium Leather', aboutP2: 'Full-grain vegetable tanned leather.',
+        aboutH3: '🛡️ 10-Year Warranty', aboutP3: 'Solid 10-year warranty.',
+        aboutContactHead: 'Contact artisan:', aboutTgLink: 'Telegram', aboutWaLink: 'WhatsApp', aboutReturn: 'Back to shop',
+        cartModalTitle: 'Your Order',
         cartHelpText: 'Have questions about shipping or payment? Message the artisan and get a special bonus!',
         cartHelpBtn: '💬 Message on Telegram',
+        deliveryLabel: 'Shipping Option:*', paymentLabel: 'Payment Method:*',
+        cepLabel: 'Postal / ZIP Code:*', phoneLabel: 'Contact phone:*', phonePlaceholder: '+1 (555) 000-00-00',
+        commentLabel: 'Full shipping address:*', commentPlaceholder: 'City, Street, ZIP',
+        cartConsent: 'I consent to data processing', submitOrderBtn: 'Place Order', submittingOrderBtn: 'Processing...',
+        alertConsent: 'Consent is required.', alertCustomFields: 'Please fill required fields.',
+        alertPhone: 'Provide phone number.', alertAddress: 'Provide shipping address.', alertCep: 'Provide ZIP code.',
+        alertOrderSuccessTitle: 'Order Placed!', alertCustomSuccessTitle: 'Request Submitted!',
+        alertOrderSuccess: '✅ Order placed successfully! The artisan will contact you.',
+        alertCustomSuccess: '✅ Request sent!', alertOrderError: 'Error sending order.', successModalBtn: 'Great',
         deliveryOptions: [
           { val: 'Standard Worldwide Tracked', text: '📦 Standard Worldwide Tracked — FREE' },
           { val: 'Express Priority Courier', text: '⚡ Express Priority Courier' }
@@ -284,15 +521,41 @@
       },
       BR: {
         htmlLang: 'pt-BR', brandSub: 'Ateliê de Couro Artesanal | Brasil',
+        btnCustom: 'Exclusivo', btnAbout: 'Sobre Nós',
+        catAll: 'Todos', catWallets: 'Carteiras', catBags: 'Bolsas', catAccessories: 'Acessórios', catAdult: '18+',
         cartLabel: 'Carrinho', chooseBtn: 'Escolher e Pedir', emptyCart: 'O carrinho está vazio',
+        engravingPlus: 'Gravação Personalizada', colorLabel: 'Cor do couro:',
+        engravingTextLabel: 'Texto/iniciais:', engravingPlaceholder: 'Ex: A.S.',
+        addToCartBtn: '+ Adicionar ao Carrinho',
+        customTitle: 'Encomenda Personalizada', customSub: 'Fabricamos peças sob medida.',
+        customItemLabel: 'Tipo de peça:*', customItemPlaceholder: 'Ex: Pasta de couro',
+        customColorLabel: 'Cor do couro e costura:', customColorPlaceholder: 'Ex: Couro conhaque',
+        customDescLabel: 'Descrição e medidas:*', customDescPlaceholder: 'Informe detalhes...',
+        customMethodLabel: 'Forma de contato:', customTgNickLabel: 'Telegram:*', customWaPhoneLabel: 'WhatsApp:*',
+        customConsent: 'Concordo com o processamento de dados', customSubmit: 'Enviar Pedido', customSending: 'Enviando...',
+        aboutTitle: 'Sobre o Ateliê', aboutH1: '🔨 100% Feito à Mão', aboutP1: 'Costurado à mão com ponto celeiro.',
+        aboutH2: '🌿 Couro Bovino Premium', aboutP2: 'Couro legítimo curtido ao vegetal.',
+        aboutH3: '🛡️ 10 Anos de Garantia', aboutP3: 'Oferecemos 10 anos de garantia.',
+        aboutContactHead: 'Falar com o artesão:', aboutTgLink: 'Telegram', aboutWaLink: 'WhatsApp', aboutReturn: 'Voltar à loja',
+        cartModalTitle: 'Seu Pedido',
         cartHelpText: 'Dúvidas sobre o frete ou pagamento? Fale com o artesão e ganhe um desconto exclusivo!',
         cartHelpBtn: '💬 Falar no Telegram',
+        deliveryLabel: 'Opção de Envio:*', paymentLabel: 'Forma de Pagamento:*',
+        cepLabel: 'CEP (Código Postal):*', phoneLabel: 'Telefone / WhatsApp:*', phonePlaceholder: '+55 (48) 90000-0000',
+        commentLabel: 'Endereço completo (Rua, Número, Bairro, Cidade):*', commentPlaceholder: 'Rua, número, cidade',
+        cartConsent: 'Concordo com o processamento de dados', submitOrderBtn: 'Finalizar Pedido', submittingOrderBtn: 'Enviando...',
+        alertConsent: 'É necessário concordar com os dados.', alertCustomFields: 'Preencha os campos obrigatórios.',
+        alertPhone: 'Informe seu telefone.', alertAddress: 'Informe seu endereço.', alertCep: 'Informe o CEP.',
+        alertOrderSuccessTitle: 'Pedido Realizado!', alertCustomSuccessTitle: 'Solicitação Enviada!',
+        alertOrderSuccess: '✅ Pedido realizado com sucesso! O artesão entrará em contato.',
+        alertCustomSuccess: '✅ Solicitação enviada!', alertOrderError: 'Erro ao enviar.', successModalBtn: 'Entendido',
         deliveryOptions: [
           { val: 'Correios / Frete Padrão Brasil', text: '📦 Correios — Frete Padrão com Rastreio' },
-          { val: 'Retirada em Florianópolis (Centro/Lagoa)', text: '📍 Retirada em mãos (Florianópolis)' }
+          { val: 'Uber Entregas / Motoboy Local', text: '🚗 Uber Entregas / Motoboy Local' },
+          { val: 'Retirada em Florianópolis', text: '📍 Retirada em mãos (Florianópolis)' }
         ],
         paymentOptions: [
-          { val: 'PIX (Chave Instantânea)', text: '⚡ PIX Instantâneo (R$)' },
+          { val: 'PIX Direto / Pixton (TON)', text: '⚡ PIX / Pixton (TON)' },
           { val: 'Bybit UID / Cripto (USDT)', text: '🪙 Cripto / Transferência Bybit UID (USDT)' }
         ]
       }
@@ -301,7 +564,34 @@
     let currentCountry = 'RU';
     let currentCurrency = 'USD';
     let exchangeRates = { RUB: 1, USD: 0.011, BRL: 0.058 };
+    let successModalCallback = null;
     let cart = [];
+    let currentModalProduct = null;
+    let selectedColorIndex = 0;
+
+    function getColorHex(colorName) {
+      const lower = colorName.toLowerCase();
+      if (lower.includes('черн') || lower.includes('black') || lower.includes('preto')) return '#1a1a1a';
+      if (lower.includes('коричн') || lower.includes('brown') || lower.includes('marrom')) return '#3d2314';
+      if (lower.includes('рыж') || lower.includes('cognac') || lower.includes('conhaque')) return '#a65b24';
+      if (lower.includes('бордо') || lower.includes('vinho')) return '#58111a';
+      if (lower.includes('красн') || lower.includes('red') || lower.includes('vermelho')) return '#8b0000';
+      if (lower.includes('зелен') || lower.includes('green') || lower.includes('verde')) return '#1b382b';
+      if (lower.includes('син') || lower.includes('blue') || lower.includes('azul')) return '#1a2b4c';
+      if (lower.includes('желт') || lower.includes('yellow')) return '#c28b1e';
+      return '#8b5a2b';
+    }
+
+    async function fetchExchangeRates() {
+      try {
+        const res = await fetch('https://open.er-api.com/v6/latest/RUB');
+        const data = await res.json();
+        if (data && data.rates) {
+          exchangeRates.USD = data.rates.USD;
+          exchangeRates.BRL = data.rates.BRL;
+        }
+      } catch (e) {}
+    }
 
     function formatPrice(rubPrice) {
       if (currentCurrency === 'USD') return `$${(rubPrice * exchangeRates.USD).toFixed(0)}`;
@@ -309,23 +599,482 @@
       return `${rubPrice.toLocaleString()} ₽`;
     }
 
+    function changeCurrency(currency) {
+      currentCurrency = currency;
+      renderProducts();
+      updateCartUI();
+      const t = I18N[currentCountry];
+      document.getElementById('item-engraving-label').textContent = `${t.engravingPlus} (+${formatPrice(ENGRAVING_PRICE_RUB)})`;
+    }
+
+    const products = [
+      { 
+        id: 101, category: 'accessories', 
+        name: { RU: 'Обложка Driver', US: 'Driver Document Wallet', BR: 'Carteira para Documentos Driver' },
+        price: 9000, 
+        desc: { RU: 'Обложка для документов. 3 отдела для паспорта и ПТС. Ручной шов.', US: 'Handcrafted document holder.', BR: 'Porta-documentos em couro artesanal.' },
+        colorVariants: [
+          { color: { RU: 'Темно-коричневый', US: 'Dark Brown', BR: 'Marrom Escuro' }, images: ['./images/oblozhkaV1/img1.webp', './images/oblozhkaV1/img2.webp', './images/oblozhkaV1/img3.webp'] },
+          { color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' }, images: ['./images/oblozhkaV1/black3.webp', './images/oblozhkaV1/black1.webp'] }
+        ]
+      },
+      { 
+        id: 102, category: 'wallets', 
+        name: { RU: 'Картхолдер Сompact', US: 'Compact Cardholder', BR: 'Porta-Cartões Compact' },
+        price: 5690, 
+        desc: { RU: 'Компактный картхолдер для 4-6 карт и наличных. Ручной шов.', US: 'Minimalist leather cardholder.', BR: 'Porta-cartões minimalista.' },
+        colorVariants: [
+          { color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' }, images: ['./images/Wallet/Cartholder/Black/cartholderM2.webp', './images/Wallet/Cartholder/Black/cartholderM1.webp'] }
+        ]
+      },
+      { 
+        id: 201, category: 'bags', 
+        name: { RU: 'Деловая сумка «Kos»', US: 'Kos Business Messenger Bag', BR: 'Bolsa Carteiro Kos' },
+        price: 36000, 
+        desc: { RU: 'Кожаная сумка под формат А5. Два отделения, карманы для мелочей.', US: 'Premium A5 shoulder bag.', BR: 'Bolsa transversal formato A5.' },
+        colorVariants: [
+          { color: { RU: 'Коричневый', US: 'Brown', BR: 'Marrom' }, images: ['./images/bagmen/bodykos/kos1.webp', './images/bagmen/bodykos/kos2.webp'] }
+        ]
+      },
+      { 
+        id: 401, category: 'adult', 
+        name: { RU: 'Портупея Elegance', US: 'Elegance Leather Harness', BR: 'Harness Elegance em Couro' },
+        price: 9850, 
+        desc: { RU: 'Портупея для уверенности и стиля. Регулируемые ремни и фурнитура.', US: 'Designed to emphasize confidence and elegance.', BR: 'Harness artesanal em tiras de couro.' },
+        colorVariants: [
+          { color: { RU: 'Черный', US: 'Black', BR: 'Preto' }, images: ['./images/18+/portuA/portuAblack1.webp', './images/18+/portuA/portuAblack2.webp'] }
+        ]
+      }
+    ];
+
+    function getTxt(val) {
+      if (!val) return '';
+      if (typeof val === 'string') return val;
+      return val[currentCountry] || val['RU'] || val['US'] || '';
+    }
+
+    function notifySuccess(title, message, callback) {
+      if (tg && tg.initData && tg.showAlert) {
+        tg.showAlert(message, () => { if (typeof callback === 'function') callback(); });
+      } else {
+        openSuccessModal(title, message, callback);
+      }
+    }
+
+    function openSuccessModal(title, message, callback) {
+      document.getElementById('t-success-title').textContent = title;
+      document.getElementById('t-success-desc').textContent = message;
+      successModalCallback = callback;
+      document.getElementById('success-modal').classList.add('active');
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('success-modal').classList.remove('active');
+      if (typeof successModalCallback === 'function') {
+        const cb = successModalCallback; successModalCallback = null; cb();
+      }
+    }
+
     function setLanguage(countryCode) {
       currentCountry = countryCode;
       const t = I18N[countryCode] || I18N.RU;
 
+      document.documentElement.lang = t.htmlLang;
+      document.getElementById('t-brand-sub').textContent = t.brandSub;
+      document.getElementById('t-btn-custom').textContent = t.btnCustom;
+      document.getElementById('t-btn-about').textContent = t.btnAbout;
+      document.getElementById('t-cat-all').textContent = t.catAll;
+      document.getElementById('t-cat-wallets').textContent = t.catWallets;
+      document.getElementById('t-cat-bags').textContent = t.catBags;
+      document.getElementById('t-cat-accessories').textContent = t.catAccessories;
+      document.getElementById('t-cat-adult').textContent = t.catAdult;
+      document.getElementById('t-cart-label').textContent = t.cartLabel;
+
       document.getElementById('t-cart-help-text').textContent = t.cartHelpText;
       document.getElementById('t-cart-help-btn').textContent = t.cartHelpBtn;
-      document.getElementById('delivery-method').innerHTML = t.deliveryOptions.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-      document.getElementById('payment-method').innerHTML = t.paymentOptions.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-      
+
+      document.getElementById('t-custom-modal-title').textContent = t.customTitle;
+      document.getElementById('t-custom-modal-sub').textContent = t.customSub;
+      document.getElementById('t-custom-lbl-item').textContent = t.customItemLabel;
+      document.getElementById('custom-item-name').placeholder = t.customItemPlaceholder;
+      document.getElementById('t-custom-lbl-color').textContent = t.customColorLabel;
+      document.getElementById('custom-item-color').placeholder = t.customColorPlaceholder;
+      document.getElementById('t-custom-lbl-desc').textContent = t.customDescLabel;
+      document.getElementById('custom-item-desc').placeholder = t.customDescPlaceholder;
+      document.getElementById('t-custom-lbl-method').textContent = t.customMethodLabel;
+      document.getElementById('t-custom-lbl-consent').textContent = t.customConsent;
+      document.getElementById('custom-submit-btn').textContent = t.customSubmit;
+
+      document.getElementById('t-about-modal-title').textContent = t.aboutTitle;
+      document.getElementById('t-about-h1').textContent = t.aboutH1;
+      document.getElementById('t-about-p1').textContent = t.aboutP1;
+      document.getElementById('t-about-h2').textContent = t.aboutH2;
+      document.getElementById('t-about-p2').textContent = t.aboutP2;
+      document.getElementById('t-about-h3').textContent = t.aboutH3;
+      document.getElementById('t-about-p3').textContent = t.aboutP3;
+      document.getElementById('t-about-contact-head').textContent = t.aboutContactHead;
+      document.getElementById('t-about-tg-link').textContent = t.aboutTgLink;
+      document.getElementById('t-about-wa-link').textContent = t.aboutWaLink;
+      document.getElementById('about-return-btn').textContent = t.aboutReturn;
+
+      document.getElementById('t-modal-color-lbl').textContent = t.colorLabel;
+      document.getElementById('item-engraving-label').textContent = `${t.engravingPlus} (+${formatPrice(ENGRAVING_PRICE_RUB)})`;
+      document.getElementById('t-modal-engraving-lbl').textContent = t.engravingTextLabel;
+      document.getElementById('item-engraving-text').placeholder = t.engravingPlaceholder;
+      document.getElementById('detail-add-btn').textContent = t.addToCartBtn;
+
+      document.getElementById('t-cart-modal-title').textContent = t.cartModalTitle;
+      document.getElementById('t-cart-delivery-lbl').textContent = t.deliveryLabel;
+      document.getElementById('t-cart-payment-lbl').textContent = t.paymentLabel;
+      document.getElementById('t-cart-phone-lbl').textContent = t.phoneLabel;
+      document.getElementById('customer-phone').placeholder = t.phonePlaceholder;
+      document.getElementById('t-cart-comment-lbl').textContent = t.commentLabel;
+      document.getElementById('customer-comment').placeholder = t.commentPlaceholder;
+      document.getElementById('t-cart-consent-lbl').textContent = t.cartConsent;
+      document.getElementById('submit-btn').textContent = t.submitOrderBtn;
+
       const cepGroup = document.getElementById('group-customer-cep');
       cepGroup.style.display = (countryCode === 'BR') ? 'block' : 'none';
+      if (countryCode === 'BR') {
+        document.getElementById('t-cart-cep-lbl').textContent = t.cepLabel;
+      }
+
+      document.getElementById('delivery-method').innerHTML = t.deliveryOptions.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('');
+      document.getElementById('payment-method').innerHTML = t.paymentOptions.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('');
+
+      onCustomContactTypeChange();
+      renderProducts();
+      updateCartUI();
+    }
+
+    function renderProducts(filter = 'all') {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = '';
+      const t = I18N[currentCountry];
+      const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+      filtered.forEach(p => {
+        const coverImg = (p.colorVariants && p.colorVariants[0] && p.colorVariants[0].images[0]) || '';
+        const title = getTxt(p.name);
+        const desc = getTxt(p.desc);
+        
+        const swatchesHtml = p.colorVariants && p.colorVariants.length > 1 ? `
+          <div class="color-swatches">
+            ${p.colorVariants.map((cv, idx) => `
+              <div class="color-dot ${idx === 0 ? 'active' : ''}" style="background: ${getColorHex(getTxt(cv.color))};" title="${getTxt(cv.color)}" data-product-id="${p.id}" data-color-idx="${idx}"></div>
+            `).join('')}
+          </div>
+        ` : '<div style="height: 6px;"></div>';
+
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.id = `product-card-${p.id}`;
+        card.innerHTML = `
+          <img class="product-img" id="img-product-${p.id}" src="${coverImg}" alt="${title}" loading="lazy">
+          <div class="product-info">
+            <div class="product-category-tag">${getCategoryName(p.category)}</div>
+            <div class="product-title">${title}</div>
+            <div class="product-desc">${desc}</div>
+            <div class="product-price">${formatPrice(p.price)}</div>
+            ${swatchesHtml}
+            <button class="add-btn">${t.chooseBtn}</button>
+          </div>
+        `;
+
+        card.querySelector('.product-img').onclick = () => openProductModal(p.id);
+        card.querySelector('.product-title').onclick = () => openProductModal(p.id);
+        card.querySelector('.add-btn').onclick = () => openProductModal(p.id);
+
+        card.querySelectorAll('.color-dot').forEach(dot => {
+          dot.onclick = (e) => {
+            e.stopPropagation();
+            changeCardColor(p.id, parseInt(dot.dataset.colorIdx, 10), dot);
+          };
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    function changeCardColor(productId, colorIdx, dotEl) {
+      const p = products.find(item => item.id === productId);
+      if (!p || !p.colorVariants[colorIdx]) return;
+      const imgEl = document.getElementById(`img-product-${productId}`);
+      if (imgEl && p.colorVariants[colorIdx].images[0]) {
+        imgEl.src = p.colorVariants[colorIdx].images[0];
+      }
+      const card = document.getElementById(`product-card-${productId}`);
+      if (card) {
+        card.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+        dotEl.classList.add('active');
+      }
+    }
+
+    function getCategoryName(cat) {
+      const t = I18N[currentCountry];
+      switch(cat) {
+        case 'wallets': return t.catWallets;
+        case 'bags': return t.catBags;
+        case 'accessories': return t.catAccessories;
+        case 'adult': return t.catAdult;
+        default: return 'Item';
+      }
+    }
+
+    function filterCategory(cat, btn) {
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts(cat);
+    }
+
+    function openAboutModal() { document.getElementById('about-modal').classList.add('active'); }
+    function closeAboutModal() { document.getElementById('about-modal').classList.remove('active'); }
+    function openCustomOrderModal() { onCustomContactTypeChange(); document.getElementById('custom-order-modal').classList.add('active'); }
+    function closeCustomOrderModal() { document.getElementById('custom-order-modal').classList.remove('active'); }
+
+    function onCustomContactTypeChange() {
+      const select = document.getElementById('custom-contact-type');
+      const label = document.getElementById('custom-contact-label');
+      const input = document.getElementById('custom-contact-value');
+      const t = I18N[currentCountry];
+      if (!select || !label || !input) return;
+
+      if (select.value === 'WhatsApp') {
+        label.textContent = t.customWaPhoneLabel;
+        input.placeholder = t.phonePlaceholder;
+        input.type = 'tel';
+      } else {
+        label.textContent = t.customTgNickLabel;
+        input.placeholder = '@username';
+        input.type = 'text';
+      }
+    }
+
+    async function submitCustomOrder() {
+      const t = I18N[currentCountry];
+      const itemName = document.getElementById('custom-item-name').value.trim();
+      const itemDesc = document.getElementById('custom-item-desc').value.trim();
+      const contactValue = document.getElementById('custom-contact-value').value.trim();
+
+      if (!itemName || !itemDesc || !contactValue) {
+        alert(t.alertCustomFields);
+        return;
+      }
+
+      const btn = document.getElementById('custom-submit-btn');
+      btn.disabled = true;
+      btn.textContent = t.customSending;
+
+      let msg = `✨ <b>ЗАЯВКА НА ИНДИВИДУАЛЬНЫЙ ЗАКАЗ!</b>\n\n🌐 Регион: ${currentCountry}\n💼 Изделие: ${itemName}\n📝 Детали: ${itemDesc}\n📞 Контакт: ${contactValue}`;
+
+      try {
+        await fetch(ORDER_API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ text: msg }) });
+        notifySuccess(t.alertCustomSuccessTitle, t.alertCustomSuccess, () => closeCustomOrderModal());
+      } catch (e) {
+        alert(t.alertOrderError);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = t.customSubmit;
+      }
+    }
+
+    function openProductModal(productId, colorIdx = 0) {
+      const p = products.find(item => item.id === productId);
+      if (!p) return;
+      currentModalProduct = p;
+      selectedColorIndex = colorIdx;
+
+      document.getElementById('detail-title').textContent = getTxt(p.name);
+      document.getElementById('detail-price').textContent = formatPrice(p.price);
+      document.getElementById('detail-desc').innerHTML = getTxt(p.desc).replace(/\n/g, '<br>');
+
+      const swatchesContainer = document.getElementById('modal-swatches-container');
+      swatchesContainer.innerHTML = p.colorVariants.map((cv, idx) => `
+        <div class="modal-color-item ${idx === selectedColorIndex ? 'active' : ''}" data-idx="${idx}">
+          <div class="modal-color-dot" style="background: ${getColorHex(getTxt(cv.color))};"></div>
+          <span>${getTxt(cv.color)}</span>
+        </div>
+      `).join('');
+
+      swatchesContainer.querySelectorAll('.modal-color-item').forEach(item => {
+        item.onclick = () => selectModalColor(parseInt(item.dataset.idx, 10));
+      });
+
+      document.getElementById('modal-selected-color-name').textContent = getTxt(p.colorVariants[selectedColorIndex].color);
+      document.getElementById('item-engraving-check').checked = false;
+      document.getElementById('item-engraving-group').style.display = 'none';
+      
+      updateGalleryForSelectedColor();
+      document.getElementById('product-detail-modal').classList.add('active');
+    }
+
+    function selectModalColor(idx) {
+      selectedColorIndex = idx;
+      const container = document.getElementById('modal-swatches-container');
+      container.querySelectorAll('.modal-color-item').forEach((item, i) => item.classList.toggle('active', i === idx));
+      if (currentModalProduct && currentModalProduct.colorVariants[idx]) {
+        document.getElementById('modal-selected-color-name').textContent = getTxt(currentModalProduct.colorVariants[idx].color);
+      }
+      updateGalleryForSelectedColor();
+    }
+
+    function updateGalleryForSelectedColor() {
+      if (!currentModalProduct) return;
+      const variant = currentModalProduct.colorVariants[selectedColorIndex];
+      const imgs = variant ? variant.images : [];
+      const gallery = document.getElementById('detail-gallery');
+      const dotsContainer = document.getElementById('gallery-dots');
+
+      gallery.innerHTML = imgs.map(src => `<img src="${src}" loading="lazy">`).join('');
+      gallery.scrollLeft = 0;
+      dotsContainer.innerHTML = imgs.length > 1 ? imgs.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join('') : '';
+    }
+
+    function closeProductModal() { document.getElementById('product-detail-modal').classList.remove('active'); currentModalProduct = null; }
+
+    function addItemWithCustomization() {
+      if (!currentModalProduct) return;
+      const variant = currentModalProduct.colorVariants[selectedColorIndex];
+      const colorName = getTxt(variant.color);
+      const hasEngraving = document.getElementById('item-engraving-check').checked;
+      const engravingText = hasEngraving ? document.getElementById('item-engraving-text').value.trim() : null;
+      const unitPriceRub = currentModalProduct.price + (hasEngraving ? ENGRAVING_PRICE_RUB : 0);
+      const cartKey = `${currentModalProduct.id}_${colorName}_${hasEngraving}`;
+
+      const existing = cart.find(i => i.cartKey === cartKey);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          cartKey, id: currentModalProduct.id, name: getTxt(currentModalProduct.name),
+          image: variant.images[0], priceRub: unitPriceRub, color: colorName, engraving: engravingText, qty: 1
+        });
+      }
+      updateCartUI();
+      closeProductModal();
+    }
+
+    function changeQtyByKey(cartKey, delta) {
+      const item = cart.find(i => i.cartKey === cartKey);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) cart = cart.filter(i => i.cartKey !== cartKey);
+      }
+      updateCartUI();
+      renderCartItems();
+    }
+
+    function updateCartUI() {
+      const cartBar = document.getElementById('cart-bar');
+      const countEl = document.getElementById('cart-count');
+      const totalEl = document.getElementById('cart-total');
+      const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+      const totalPriceRub = cart.reduce((sum, item) => sum + (item.priceRub * item.qty), 0);
+
+      countEl.textContent = totalCount;
+      totalEl.textContent = formatPrice(totalPriceRub);
+      if (totalCount > 0) cartBar.classList.add('visible');
+      else { cartBar.classList.remove('visible'); closeCartModal(); }
+    }
+
+    function renderCartItems() {
+      const container = document.getElementById('cart-items-container');
+      const t = I18N[currentCountry];
+      if (cart.length === 0) { container.innerHTML = `<div class="empty-cart-msg">${t.emptyCart}</div>`; return; }
+
+      container.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <img class="cart-item-img" src="${item.image}">
+          <div class="cart-item-details">
+            <div class="cart-item-title">${item.name}</div>
+            <div class="cart-item-options">🎨 ${item.color} ${item.engraving ? `<br>✍️ ${t.engravingPlus}: "${item.engraving}"` : ''}</div>
+            <div class="cart-item-price">${formatPrice(item.priceRub * item.qty)}</div>
+          </div>
+          <div class="qty-controls">
+            <button class="qty-btn" data-key="${item.cartKey}" data-delta="-1">-</button>
+            <span>${item.qty}</span>
+            <button class="qty-btn" data-key="${item.cartKey}" data-delta="1">+</button>
+          </div>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('.qty-btn').forEach(b => {
+        b.onclick = () => changeQtyByKey(b.dataset.key, parseInt(b.dataset.delta, 10));
+      });
+    }
+
+    function openCartModal() { renderCartItems(); document.getElementById('cart-modal').classList.add('active'); }
+    function closeCartModal() { document.getElementById('cart-modal').classList.remove('active'); }
+
+    async function submitOrder() {
+      const t = I18N[currentCountry];
+      if (cart.length === 0) return;
+
+      const phone = document.getElementById('customer-phone').value.trim();
+      const comment = document.getElementById('customer-comment').value.trim();
+      if (!phone || !comment) { alert(t.alertAddress); return; }
+
+      let cep = '';
+      if (currentCountry === 'BR') {
+        cep = document.getElementById('customer-cep').value.trim();
+        if (!cep) { alert(t.alertCep); return; }
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = t.submittingOrderBtn;
+
+      const delivery = document.getElementById('delivery-method').value;
+      const payment = document.getElementById('payment-method').value;
+
+      let msg = `🔥 <b>НОВЫЙ ЗАКАЗ (KOZHEDELNIKOV)!</b>\n\n🌐 Регион: ${currentCountry}\n`;
+      cart.forEach((item, idx) => {
+        msg += `${idx + 1}. ${item.name} x${item.qty} (${formatPrice(item.priceRub * item.qty)})\n   🎨 ${item.color}\n`;
+      });
+      msg += `\n🚚 Доставка: ${delivery}\n💳 Оплата: ${payment}\n`;
+      if (cep) msg += `📮 CEP: ${cep}\n`;
+      msg += `📍 Адрес: ${comment}\n📞 Телефон: ${phone}`;
+
+      try {
+        await fetch(ORDER_API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ text: msg }) });
+        notifySuccess(t.alertOrderSuccessTitle, t.alertOrderSuccess, () => {
+          cart = []; updateCartUI(); closeCartModal();
+        });
+      } catch (e) {
+        alert(t.alertOrderError);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = t.submitOrderBtn;
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('language-select').onchange = (e) => setLanguage(e.target.value);
+      document.getElementById('currency-select').onchange = (e) => changeCurrency(e.target.value);
+      document.getElementById('header-custom-order-btn').onclick = openCustomOrderModal;
+      document.getElementById('header-about-btn').onclick = openAboutModal;
+      document.getElementById('close-custom-order-btn').onclick = closeCustomOrderModal;
+      document.getElementById('close-about-btn').onclick = closeAboutModal;
+      document.getElementById('about-return-btn').onclick = closeAboutModal;
+      document.getElementById('close-product-btn').onclick = closeProductModal;
+      document.getElementById('close-cart-btn').onclick = closeCartModal;
+      document.getElementById('success-modal-btn').onclick = closeSuccessModal;
+      document.getElementById('cart-bar').onclick = openCartModal;
+      document.getElementById('submit-btn').onclick = submitOrder;
+      document.getElementById('custom-submit-btn').onclick = submitCustomOrder;
+      document.getElementById('custom-contact-type').onchange = onCustomContactTypeChange;
+      document.getElementById('item-engraving-check').onchange = () => {
+        document.getElementById('item-engraving-group').style.display = document.getElementById('item-engraving-check').checked ? 'block' : 'none';
+      };
+
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.onclick = () => filterCategory(btn.dataset.category, btn);
+      });
+
       setLanguage('RU');
       const loader = document.getElementById('app-loader');
       if (loader) { loader.classList.add('fade-out'); setTimeout(() => loader.remove(), 250); }
+      fetchExchangeRates().then(() => renderProducts());
     });
   </script>
 </body>
