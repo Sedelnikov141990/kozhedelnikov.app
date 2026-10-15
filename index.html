@@ -1408,147 +1408,368 @@
       return `${rubPrice.toLocaleString('ru-RU')} ₽`;
     }
 
+        // Полный каталог товаров со всеми позициями
+
     const products = [
+
       { 
+
         id: 101, category: 'accessories', 
+
         name: { RU: 'Обложка Driver', US: 'Driver Document Wallet', BR: 'Carteira para Documentos Driver' },
+
         price: 9000, 
+
         desc: { RU: 'Обложка для документов. 3 отдела для паспорта и ПТС. 3 отдела под карты и водительское удостоверение. Удобная кнопка, чтобы не потерять важное. Ручной шов.', US: 'Handcrafted document holder. 3 compartments for passport & vehicle papers, 3 card slots.', BR: 'Porta-documentos em couro artesanal.' },
+
         colorVariants: [
+
           { color: { RU: 'Темно-коричневый', US: 'Dark Brown', BR: 'Marrom Escuro' }, images: ['./images/oblozhkaV1/img1.webp', './images/oblozhkaV1/img2.webp', './images/oblozhkaV1/img3.webp', './images/oblozhkaV1/img4.webp', './images/oblozhkaV1/img6.webp'] },
+
           { color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' }, images: ['./images/oblozhkaV1/black3.webp', './images/oblozhkaV1/black1.webp', './images/oblozhkaV1/black4.webp', './images/oblozhkaV1/black2.webp', './images/oblozhkaV1/black5.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 102, category: 'wallets', 
+
         name: { RU: 'Картхолдер Сompact', US: 'Compact Cardholder', BR: 'Porta-Cartões Compact' },
+
         price: 5690, 
+
         desc: { RU: 'Компактный картхолдер для 4-6 карт и наличных. Ручной шов.', US: 'Minimalist leather cardholder.', BR: 'Porta-cartões minimalista.' },
+
         colorVariants: [
+
           { color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' }, images: ['./images/Wallet/Cartholder/Black/cartholderM2.webp', './images/Wallet/Cartholder/Black/cartholderM1.webp', './images/Wallet/Cartholder/Black/cartholderM3.webp', './images/Wallet/Cartholder/Black/cartholderM4.webp', './images/Wallet/Cartholder/Black/cartholderM5.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 1022, category: 'wallets', 
+
         name: { RU: 'Картхолдер Travel', US: 'Travel Cardholder', BR: 'Porta-Cartões Travel' },
+
         price: 7900, 
+
         desc: { RU: 'Компактный картхолдер для 6-7 карт и наличных. Ручной шов.', US: 'Compact travel wallet.', BR: 'Carteira compacta.' },
+
         colorVariants: [
+
           { color: { RU: 'Коричневый', US: 'Brown', BR: 'Marrom' }, images: ['./images/Wallet/Cartholder/Brown/cartholderB1.webp', './images/Wallet/Cartholder/Brown/cartholderB2.webp', './images/Wallet/Cartholder/Brown/cartholderB3.webp', './images/Wallet/Cartholder/Brown/cartholderB4.webp', './images/Wallet/Cartholder/Brown/cartholderB5.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 1023, category: 'wallets', 
+
         name: { RU: 'Бифолд Classic', US: 'Classic Bifold', BR: 'Carteira Bifold Classic' },
+
         price: 10690, 
+
         desc: { RU: 'Компактный кошелек вмещает 6-8 карт и купюры. Ручной шов.', US: 'Slim bifold wallet.', BR: 'Carteira bifold clássica.' },
+
         colorVariants: [
+
           { color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' }, images: ['./images/Wallet/Bifold2/Bifold2A5.webp', './images/Wallet/Bifold2/Bifold2A2.webp', './images/Wallet/Bifold2/Bifold2A1.webp', './images/Wallet/Bifold2/Bifold2A4.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 1024, category: 'wallets', 
+
         name: { RU: 'Кошелёк Classic', US: 'Classic Wallet', BR: 'Carteira Masculina Classic' },
+
         price: 12550, 
+
         desc: { RU: 'Классический кошелек вмещает 7-10 карт и купюры. Ручной шов.', US: 'Full-size classic wallet.', BR: 'Carteira tradicional.' },
+
         colorVariants: [
+
           { color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' }, images: ['./images/Wallet/Bifold/BifoldA2.webp', './images/Wallet/Bifold/BifoldA1.webp', './images/Wallet/Bifold/BifoldA3.webp', './images/Wallet/Bifold/BifoldA4.webp', './images/Wallet/Bifold/BifoldA5.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 1025, category: 'wallets', 
+
         name: { RU: 'Картхолдер New', US: 'New Pocket Cardholder', BR: 'Porta-Cartões New' },
+
         price: 4000, 
+
         desc: { RU: 'Компактный картхолдер вмещает 3-4 карты и купюры. Ручной шов.', US: 'Ultra-slim pocket sleeve.', BR: 'Porta-cartões extra fino.' },
+
         colorVariants: [
+
           { color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' }, images: ['./images/Wallet/Cartholder2/Cartholder2A1.webp', './images/Wallet/Cartholder2/Cartholder2A2.webp', './images/Wallet/Cartholder2/Cartholder2A3.webp', './images/Wallet/Cartholder2/Cartholder2A4.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 1026, category: 'wallets', 
+
         name: { RU: 'Кошелёк Mini', US: 'Mini Pocket Wallet', BR: 'Mini Carteira Pocket' },
+
         price: 10450, 
+
         desc: { RU: 'Компактный кошелёк вмещает 5-6 карт и купюры. Ручной шов.', US: 'Compact daily wallet.', BR: 'Carteira de bolso prática.' },
+
         colorVariants: [
+
           { color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' }, images: ['./images/Wallet/WalletM/WalletM1.webp', './images/Wallet/WalletM/WalletM2.webp', './images/Wallet/WalletM/WalletM3.webp', './images/Wallet/WalletM/WalletM4.webp', './images/Wallet/WalletM/WalletM5.webp', './images/Wallet/WalletM/WalletM6.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 1027, category: 'wallets', 
+
         name: { RU: 'Клатч Zipper', US: 'Zipper Leather Clutch', BR: 'Clutch com Zíper' },
+
         price: 17660, 
+
         desc: { RU: 'Вместительный клатч на замке. Ручной шов.', US: 'Spacious zippered leather organizer.', BR: 'Bolsa de mão/clutch com zíper.' },
+
         colorVariants: [
+
           { color: { RU: 'Коричневый, Черный', US: 'Brown & Black', BR: 'Marrom e Preto' }, images: ['./images/Wallet/KlatchA/KlatchA1.webp', './images/Wallet/KlatchA/KlatchA2.webp', './images/Wallet/KlatchA/KlatchA3.webp', './images/Wallet/KlatchA/KlatchA4.webp', './images/Wallet/KlatchA/KlatchA5.webp', './images/Wallet/KlatchA/KlatchA6.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 103, category: 'wallets', 
+
         name: { RU: 'Лонгер Moscow', US: 'Moscow Long Wallet', BR: 'Carteira Longa Moscow' },
+
         price: 15000, 
+
         desc: { RU: 'Вместительный лонгер для купюр, карт и авиабилетов. Карман на молнии, 6 отделений для карточек, два отделения под купюры.', US: 'Spacious travel long wallet.', BR: 'Carteira longa de viagem.' },
+
         colorVariants: [
+
           { color: { RU: 'Коричневый, зеленый', US: 'Brown & Green', BR: 'Marrom e Verde' }, images: ['./images/Wallet/longer/Brown/longerB1.webp', './images/Wallet/longer/Brown/longerB2.webp', './images/Wallet/longer/Brown/longerB3.webp', './images/Wallet/longer/Brown/longerB4.webp', './images/Wallet/longer/Brown/longerB5.webp'] },
+
           { color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' }, images: ['./images/Wallet/longer/Black/longerA1.webp', './images/Wallet/longer/Black/longerA2.webp', './images/Wallet/longer/Black/longerA3.webp', './images/Wallet/longer/Black/longerA4.webp', './images/Wallet/longer/Black/longerA5.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 201, category: 'bags', 
+
         name: { RU: 'Деловая сумка «Kos»', US: 'Kos Business Messenger Bag', BR: 'Bolsa Carteiro Kos' },
+
         price: 36000, 
+
         desc: { RU: 'Кожаная сумка под формат А5. Два основных отделения, карманы для печати, лупы, мелочей и задний отсек на молнии для телефона. Удобно и функционально.', US: 'Premium A5 shoulder bag.', BR: 'Bolsa transversal formato A5.' },
+
         colorVariants: [
+
           { color: { RU: 'Коричневый', US: 'Brown', BR: 'Marrom' }, images: ['./images/bagmen/bodykos/kos1.webp', './images/bagmen/bodykos/kos2.webp', './images/bagmen/bodykos/kos3.webp', './images/bagmen/bodykos/kos4.webp', './images/bagmen/bodykos/kos5.webp'] },
+
           { color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' }, images: ['./images/bagmen/bodykos/kos1.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 202, category: 'bags', 
+
         name: { RU: 'Рюкзак «Travel»', US: 'Travel Convertible Backpack', BR: 'Mochila Conversível Travel' },
+
         price: 38500, 
+
         desc: { RU: 'Премиальный кожаный рюкзак-трансформер: легко превращается в элегантную сумку. Вместительное основное отделение, карман на молнии и безупречный стиль.', US: 'Transformer leather backpack.', BR: 'Mochila conversível.' },
+
         colorVariants: [
+
           { color: { RU: 'Жёлтый', US: 'Mustard Yellow', BR: 'Amarelo Mostarda' }, images: ['./images/baggirl/BackpackA/BackpackA1.webp', './images/baggirl/BackpackA/BackpackA2.webp', './images/baggirl/BackpackA/BackpackA3.webp', './images/baggirl/BackpackA/BackpackA4.webp', './images/baggirl/BackpackA/BackpackA5.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 203, category: 'bags', 
+
         name: { RU: 'Деловая сумка «Ocean»', US: 'Ocean Crossbody Bag', BR: 'Bolsa Crossbody Ocean' },
+
         price: 36500, 
+
         desc: { RU: 'Премиальная кожаная кросс-боди формата А5 для бизнеса и путешествий. Восемь продуманных карманов, регулируемый ремень и безупречный стиль.', US: 'Signature A5 crossbody bag.', BR: 'Bolsa transversal formato A5.' },
+
         colorVariants: [
+
           { color: { RU: 'Синий', US: 'Deep Blue', BR: 'Azul Petróleo' }, images: ['./images/baggirl/bodyA/bodyA1.webp', './images/baggirl/bodyA/bodyA2.webp', './images/baggirl/bodyA/bodyA3.webp', './images/baggirl/bodyA/bodyA4.webp', './images/baggirl/bodyA/bodyA5.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 204, category: 'bags', 
+
         name: { RU: 'Сумка для вина «Wine»', US: 'Wine Leather Carrier', BR: 'Porta-Vinhos em Couro Wine' },
+
         price: 29950, 
+
         desc: { RU: 'Премиальная кожаная сумка для двух бутылок вина. Надежная застежка-кнопка, удобный плечевой ремень и красивая эстетика.', US: 'Luxury dual-bottle wine tote.', BR: 'Porta-vinhos luxuoso.' },
+
         colorVariants: [
+
           { color: { RU: 'Красный', US: 'Crimson Red', BR: 'Vermelho Carmim' }, images: ['./images/baggirl/wine/wine1.webp', './images/baggirl/wine/wine2.webp', './images/baggirl/wine/wine3.webp', './images/baggirl/wine/wine4.webp', './images/baggirl/wine/wine5.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 301, category: 'accessories', 
+
         name: { RU: 'Ремень и Брелок', US: 'Belt & Keychain Set', BR: 'Kit Cinto e Chaveiro' },
+
         price: 12950, 
+
         desc: { RU: 'Ручная работа из премиальной кожи с пряжкой из латуни: плавная регулировка, надёжная посадка, ширина 38мм — лаконичная элегантность.', US: 'Full-grain 38mm leather belt.', BR: 'Cinto de couro espesso 38mm.' },
+
         colorVariants: [
+
           { color: { RU: 'Темно-коричневый', US: 'Dark Brown', BR: 'Marrom Escuro' }, images: ['./images/Belt/beltA/beltA1.webp', './images/Belt/beltA/beltA2.webp', './images/Belt/beltA/beltA3.webp', './images/Belt/beltA/beltA4.webp', './images/Belt/beltA/beltA5.webp'] },
+
           { color: { RU: 'Черный', US: 'Black', BR: 'Preto' }, images: ['./images/Belt/beltA/beltA1.webp'] }
+
         ]
+
       },
+
       { 
+
         id: 302, category: 'accessories', 
+
         name: { RU: 'Обложка и картхолдер', US: 'Passport Cover & Cardholder Set', BR: 'Kit Porta-Passaporte e Cartões' },
-        price: 13500, 
-        desc: { RU: 'Комплект ручной работы из обложки на паспорт и классического картхолдера. Натуральная кожа, седельный шов вощеной нитью.', US: 'Handmade passport cover and cardholder gift set.', BR: 'Kit artesanal com porta-passaporte e porta-cartões em couro nobre.' },
+
+        price: 7950, 
+
+        desc: { RU: 'Кожаный комплект: обложка для документов с тиснением и компактный кардхолдер для карт и купюр.', US: 'Matching daily set.', BR: 'Conjunto requintado.' },
+
         colorVariants: [
-          { color: { RU: 'Темно-коричневый', US: 'Dark Brown', BR: 'Marrom Escuro' }, images: ['./images/oblozhkaV1/img1.webp', './images/Wallet/Cartholder/Brown/cartholderB1.webp'] },
-          { color: { RU: 'Черный', US: 'Black', BR: 'Preto' }, images: ['./images/oblozhkaV1/black3.webp', './images/Wallet/Cartholder/Black/cartholderM2.webp'] }
+
+          { color: { RU: 'Чёрный', US: 'Black', BR: 'Preto' }, images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA2.webp'] },
+
+          { color: { RU: 'Коричневый', US: 'Brown', BR: 'Marrom' }, images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA1.webp'] },
+
+          { color: { RU: 'Жёлтый (Горчица)', US: 'Mustard Yellow', BR: 'Amarelo Mostarda' }, images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA4.webp'] },
+
+          { color: { RU: 'Синий', US: 'Blue', BR: 'Azul' }, images: ['./images/oblizhkaPC/oblozhkaA/oblozhkaA5.webp'] }
+
         ]
+
+      },
+
+      { 
+
+        id: 303, category: 'accessories', 
+
+        name: { RU: 'Обложка для паспорта', US: 'Passport Cover Sleeve', BR: 'Capa Protetora para Passaporte' },
+
+        price: 6850, 
+
+        desc: { RU: 'Удобная обложка для паспорта и посадочного талона из натуральной кожи растительного дубления.', US: 'Durable full-grain leather passport case.', BR: 'Capa durável para passaporte.' },
+
+        colorVariants: [
+
+          { color: { RU: 'Чёрный', US: 'Black', BR: 'Preto' }, images: ['./images/oblizhkaPC/oblozhkaB/oblozhkaB1.webp'] }
+
+        ]
+
+      },
+
+      { 
+
+        id: 401, category: 'adult', 
+
+        name: { RU: 'Портупея Elegance', US: 'Elegance Leather Harness', BR: 'Harness Elegance em Couro' },
+
+        price: 9850, 
+
+        desc: { RU: `Портупея создана для того, чтобы подчеркнуть уверенность, элегантность и смелое самовыражение. Регулируемые ремни и усиленная металлическая фурнитура.\n3 ремешка — 29 × 1,5 см\n10 ремешков — 27 × 1,5 см\n3 ремешка — 15 × 1,5 см`, US: `Designed to emphasize confidence and elegance.`, BR: `Harness artesanal em tiras de couro.` },
+
+        colorVariants: [
+
+          { color: { RU: 'Черный', US: 'Black', BR: 'Preto' }, images: ['./images/18+/portuA/portuAblack1.webp', './images/18+/portuA/portuAblack2.webp', './images/18+/portuA/portuAred3.webp', './images/18+/portuA/portuAred4.webp'] },
+
+          { color: { RU: 'Красный глубокий', US: 'Deep Red', BR: 'Vermelho Intenso' }, images: ['./images/18+/portuA/portuAred1.webp', './images/18+/portuA/portuAred2.webp', './images/18+/portuA/portuAred3.webp', './images/18+/portuA/portuAred4.webp'] }
+
+        ]
+
+      },
+
+      { 
+
+        id: 402, category: 'adult', 
+
+        name: { RU: 'Набор из браслетов и манжет на лодыжку', US: 'Wrist & Ankle Leather Cuffs Set', BR: 'Conjunto de Algemas e Tornozeleiras' },
+
+        price: 9550, 
+
+        desc: { RU: 'Премиальный комплект кожаных наручников для ценителей эстетики контроля и власти. Надежная фурнитура, безупречное качество и 10 лет гарантии.', US: 'Premium leather restraints set.', BR: 'Kit sofisticado de punhos.' },
+
+        colorVariants: [
+
+          { color: { RU: 'Черный, красный', US: 'Black & Red', BR: 'Preto e Vermelho' }, images: ['./images/18+/18A1.webp', './images/18+/18A2.webp', './images/18+/18A3.webp', './images/18+/18A4.webp', './images/18+/18A5.webp'] }
+
+        ]
+
+      },
+
+      { 
+
+        id: 403, category: 'adult', 
+
+        name: { RU: 'Флоггер Craft', US: 'Craft Leather Flogger', BR: 'Flogger em Couro Craft' },
+
+        price: 8550, 
+
+        desc: { RU: 'Искушающая кожаная плетка ручной работы — баланс нежности и абсолютной власти. Премиальный черный глянец, шелковистые хвосты и чистая страсть.', US: 'Balanced handcrafted leather flogger.', BR: 'Chicote flogger artesanal.' },
+
+        colorVariants: [
+
+          { color: { RU: 'Черный матовый', US: 'Matte Black', BR: 'Preto Fosco' }, images: ['./images/18+/floggerA/floggerA1.webp', './images/18+/floggerA/floggerA2.webp', './images/18+/floggerA/floggerA3.webp', './images/18+/floggerA/floggerA4.webp', './images/18+/floggerA/floggerA5.webp'] }
+
+        ]
+
       }
+
     ];
 
     function hideLoader() {
