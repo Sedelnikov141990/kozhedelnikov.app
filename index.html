@@ -1807,7 +1807,7 @@
 
       document.getElementById('product-detail-modal').classList.remove('active');
       updateCartUI();
-      trackAnalyticsEvent('add_to_cart', { item_id: activeDetailProduct.id });
+      trackAnalyticsEvent('purchase', { status: 'success' });
 
       if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.notificationOccurred('success');
@@ -1959,10 +1959,11 @@
         });
 
         if (tg && typeof tg.sendData === 'function') {
-          try {
-            tg.sendData(JSON.stringify({ type: 'CUSTOM_ORDER', item: itemName, contact: contactVal }));
-          } catch(e) {}
-        }
+  try {
+    trackAnalyticsEvent('purchase', { item_name: itemName, type: 'CUSTOM_ORDER' });
+    tg.sendData(JSON.stringify({ type: 'CUSTOM_ORDER', item: itemName, contact: contactVal }));
+  } catch(e) {}
+}
 
         if (tg && tg.HapticFeedback) {
           tg.HapticFeedback.notificationOccurred('success');
