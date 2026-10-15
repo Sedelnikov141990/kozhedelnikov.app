@@ -1061,12 +1061,19 @@
     const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbwjKxXN0IZ3R8Qg_HpPAwDK85Lmq2HRbsuPW7xRpug-dMZ9Z6bJ8SGCM3KQ5rZGRbpEjQ/exec";
     const ENGRAVING_PRICE_RUB = 900;
 
-    function trackAnalyticsEvent(name, props = {}) {
+    unction trackAnalyticsEvent(name, props = {}) {
       if (typeof window.trackAptabaseEvent === 'function') {
-        try { window.trackAptabaseEvent(name, props); } catch (e) {}
+        try {
+          const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+          const userProps = user ? {
+            user_id: String(user.id),
+            username: user.username ? `@${user.username}` : (user.first_name || 'user')
+          } : {};
+
+          window.trackAptabaseEvent(name, { ...userProps, ...props });
+        } catch (e) {}
       }
     }
-
     const I18N = {
       RU: {
         htmlLang: 'ru-RU',
@@ -1807,7 +1814,11 @@
 
       document.getElementById('product-detail-modal').classList.remove('active');
       updateCartUI();
-      trackAnalyticsEvent('purchase', { status: 'success' });
+     trackAnalyticsEvent('purchase', { 
+  item_id: '101', 
+  item_name: itemName, 
+  type: 'CUSTOM_ORDER' 
+});
 
       if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.notificationOccurred('success');
