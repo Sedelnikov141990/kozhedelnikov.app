@@ -15,14 +15,20 @@
     import { init, trackEvent } from 'https://esm.sh/@aptabase/web@0.1.1';
     
     try {
-      init('A-US-0220832996', { appVersion: '1.0.0' });
+      const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+      
+      // Передаем userId прямо при инициализации:
+      init('A-US-0220832996', { 
+        appVersion: '1.0.0',
+        userId: tgUser ? String(tgUser.id) : undefined
+      });
+      
       window.trackAptabaseEvent = trackEvent;
 
       setTimeout(() => {
-        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
         trackEvent('app_open', {
           user_id: tgUser ? String(tgUser.id) : 'unknown',
-          username: tgUser && tgUser.username ? tgUser.username : 'anonymous'
+          username: tgUser && tgUser.username ? tgUser.username : (tgUser?.first_name || 'anonymous')
         });
       }, 500);
     } catch (err) {
@@ -1061,7 +1067,7 @@
     const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbwjKxXN0IZ3R8Qg_HpPAwDK85Lmq2HRbsuPW7xRpug-dMZ9Z6bJ8SGCM3KQ5rZGRbpEjQ/exec";
     const ENGRAVING_PRICE_RUB = 900;
 
-    unction trackAnalyticsEvent(name, props = {}) {
+    function trackAnalyticsEvent(name, props = {}) {
       if (typeof window.trackAptabaseEvent === 'function') {
         try {
           const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -1814,11 +1820,10 @@
 
       document.getElementById('product-detail-modal').classList.remove('active');
       updateCartUI();
-     trackAnalyticsEvent('purchase', { 
-  item_id: '101', 
-  item_name: itemName, 
-  type: 'CUSTOM_ORDER' 
-});
+      trackAnalyticsEvent('add_to_cart', { 
+        item_id: activeDetailProduct.id,
+        item_name: activeDetailProduct.name[currentCountry] || activeDetailProduct.name.RU
+      });
 
       if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.notificationOccurred('success');
@@ -2071,6 +2076,11 @@
 
         if (tg && typeof tg.sendData === 'function') {
           try {
+		  trackAnalyticsEvent('purchase', { 
+              type: 'STANDARD_ORDER', 
+              total: payload.total,
+              items_count: sanitizedItems.length 
+            });
             tg.sendData(JSON.stringify({ type: 'STANDARD_ORDER', total: payload.total, phone: payload.phone }));
           } catch(e) {}
         }
